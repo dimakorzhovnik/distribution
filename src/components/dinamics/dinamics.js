@@ -3,21 +3,136 @@ import Plotly from 'react-plotly.js';
 import { x, y, z } from './list';
 
 export class Dinamics extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      center: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      eye: {
+        x: 0.57,
+        y: 0,
+        z: -5.53
+      },
+      up: {
+        x: 0,
+        y: 0,
+        z: 1
+      }
+    };
+  }
+
+  state1 = () =>
+    this.setState({
+      center: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      eye: {
+        x: 0.57,
+        y: 0,
+        z: -5.53
+      },
+      up: {
+        x: 0,
+        y: 0,
+        z: 1
+      }
+    });
+
+  state2 = () =>
+    this.setState({
+      center: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      eye: {
+        x: 0,
+        y: 3,
+        z: 0
+      },
+      up: {
+        x: 0,
+        y: 0,
+        z: -5
+      }
+    });
+
+  state3 = () =>
+    this.setState({
+      center: {
+        x: 0,
+        y: 0,
+        z: 0
+      },
+      eye: {
+        x: 3,
+        y: 0,
+        z: 0
+      },
+      up: {
+        x: 0,
+        y: 0,
+        z: -5
+      }
+    });
+
   render() {
+    const { center, eye, up } = this.state;
+
+    const data = {
+      type: 'scatter3d',
+      mode: 'lines',
+      x,
+      y,
+      z,
+      line: {
+        width: 6,
+        color: '#36d6ae'
+      },
+      hovertemplate:
+        'TCYB allocated: %{x: .2f}%<br>' +
+        'ATOMs contributed: %{y}<br>' +
+        'Personal discount: %{z:.2f%}%<br>' +
+        '<extra></extra>'
+      //   marker: {
+      //     size: 5,
+      //     color: '#fff',
+      //     colorscale: "#fff",
+      //     // cmin: -20,
+      //     // cmax: 50
+      //   }
+    };
+
     const layout = {
       paper_bgcolor: '#000',
       plot_bgcolor: '#000',
-      hoverlabel: { bgcolor: '#fff' },
+      hoverlabel: {
+        bgcolor: '#000',
+        font: {
+          color: '#fff'
+        }
+      },
       scene: {
         yaxis: {
-          gridcolor: '#fff',
+          title: {
+            text: 'ATOM'
+          },
+          gridcolor: '#dedede',
           color: '#fff',
           tickfont: {
             color: '#36d6ae'
           }
         },
         xaxis: {
-          gridcolor: '#fff',
+          title: {
+            text: '%'
+          },
+          gridcolor: '#dedede',
           color: '#fff',
           tickfont: {
             color: '#36d6ae'
@@ -25,7 +140,10 @@ export class Dinamics extends Component {
           zeroline: false
         },
         zaxis: {
-          gridcolor: '#fff',
+          title: {
+            text: 'Discont'
+          },
+          gridcolor: '#dedede',
           color: '#fff',
           tickfont: {
             color: '#36d6ae'
@@ -34,25 +152,13 @@ export class Dinamics extends Component {
         },
         aspectratio: {
           x: 2,
-          y: 1,
-          z: 1
+          y: 6,
+          z: 2
         },
         camera: {
-          center: {
-            x: 0,
-            y: 0,
-            z: 0
-          },
-          eye: {
-            x: 1.5,
-            y: 1.25,
-            z: 2
-          },
-          up: {
-            x: 0,
-            y: 1,
-            z: 0
-          }
+          center,
+          up,
+          eye
         }
       },
       // width: 550,
@@ -65,35 +171,21 @@ export class Dinamics extends Component {
         pad: 4
       }
     };
+    const config = {
+      displayModeBar: false,
+      scrollZoom: false,
+      responsive: true
+    };
+
     return (
-      <Plotly
-        data={[
-          {
-            type: 'scatter3d',
-            mode: 'lines',
-            x,
-            y,
-            z,
-            line: {
-              width: 6,
-              color: '#36d6ae'
-            },
-            hovertemplate:
-              'TCYB allocated: %{x: .2f}%<br>' +
-              'ATOMs contributed: %{y}<br>' +
-              'Personal discount: %{z:.2f%}%<br>' +
-              '<extra></extra>'
-            //   marker: {
-            //     size: 5,
-            //     color: '#fff',
-            //     colorscale: "#fff",
-            //     // cmin: -20,
-            //     // cmax: 50
-            //   }
-          }
-        ]}
-        layout={layout}
-      />
+      <div>
+        <div>
+          <button onClick={this.state1}>1</button>
+          <button onClick={this.state2}>2</button>
+          <button onClick={this.state3}>3</button>
+        </div>
+        <Plotly data={[data]} layout={layout} config={config} />
+      </div>
     );
   }
 }

@@ -256,11 +256,8 @@ class App extends PureComponent {
     return (
       <span>
         <main className="block-body">
-          <span className="caption">
-            The most excited auction of the future web
-          </span>
+          <span className="caption">Game of Links</span>
           <Statistics />
-          <span className="chapter">Price history</span>
           <Dinamics />
           <Table />
         </main>
