@@ -6,7 +6,7 @@ export const Indicators = ({ title, value }) => (
   <div className='contaiter-indicator'>
     <span className='indicator-title'>{title}</span>
     <span className='indicator-value'>{value}</span>
-    <div className='dots' />
+    {/* <div className='dots' /> */}
   </div>
 );
 

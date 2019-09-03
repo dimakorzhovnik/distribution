@@ -256,7 +256,7 @@ class App extends PureComponent {
     return (
       <span>
         <main className="block-body">
-          <span className="caption">Game of Links</span>
+          {/* <span className="caption">Game of Links</span> */}
           <Statistics />
           <Dinamics />
           <Table />

@@ -5,9 +5,11 @@ export class Statistics extends Component {
   render() {
     return (
       <Container>
-        <Indicators title='15%' value='Current discount' />
-        <Card title='600 000' value='ATOMs left' />
-        <Indicators title='12%' value='Cyb won' />
+        <Indicators title='1 of 90' value='Raund' />
+        <Indicators title='10%' value='Faund left' />
+        <Card title='0.01 GCYB' value='Current price' />
+        <Indicators title='15 ETH' value='Current discount' />
+        <Indicators title='120 THC' value='CAP' />
       </Container>
     );
   }

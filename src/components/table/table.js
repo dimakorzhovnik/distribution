@@ -5,10 +5,11 @@ export class Table extends Component {
         return (
             <div className='table'>
                 <div className='table-header-rows'>
-                    <div>Q1</div>
-                    <div>Q2</div>
-                    <div>Q3</div>
-                    <div>Q4</div>
+                    <div>Raund №</div>
+                    <div>ETH</div>
+                    <div>Price</div>
+                    <div>Your</div>
+                    <div>Q5</div>
                 </div>
                 <div className='table-body'>
                 <div className='table-rows'>
@@ -16,11 +17,6 @@ export class Table extends Component {
                     <div>$200</div>
                     <div>$35</div>
                     <div>Andy</div>
-                </div>
-                <div className='table-rows'>
-                    <div>Joyce Ming</div>
-                    <div>$200</div>
-                    <div>$35</div>
                     <div>Andy</div>
                 </div>
                 <div className='table-rows'>
@@ -28,17 +24,27 @@ export class Table extends Component {
                     <div>$200</div>
                     <div>$35</div>
                     <div>Andy</div>
-                </div>
-                <div className='table-rows'>
-                    <div>Joyce Ming</div>
-                    <div>$200</div>
-                    <div>$35</div>
                     <div>Andy</div>
                 </div>
                 <div className='table-rows'>
                     <div>Joyce Ming</div>
                     <div>$200</div>
                     <div>$35</div>
+                    <div>Andy</div>
+                    <div>Andy</div>
+                </div>
+                <div className='table-rows'>
+                    <div>Joyce Ming</div>
+                    <div>$200</div>
+                    <div>$35</div>
+                    <div>Andy</div>
+                    <div>Andy</div>
+                </div>
+                <div className='table-rows'>
+                    <div>Joyce Ming</div>
+                    <div>$200</div>
+                    <div>$35</div>
+                    <div>Andy</div>
                     <div>Andy</div>
                 </div>
                 </div>
