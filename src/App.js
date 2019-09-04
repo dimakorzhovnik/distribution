@@ -13,7 +13,11 @@ import {
   Dinamics,
   Statistics,
   Table,
-  ActionBar
+  ActionBar,
+  SeeSaw,
+  Container,
+  Card,
+  ContainerCard
 } from './components';
 import './main.css';
 
@@ -256,13 +260,43 @@ class App extends PureComponent {
     return (
       <span>
         <main className="block-body">
-          <span className="caption">
-            The most excited auction of the future web
-          </span>
-          <Statistics />
-          <span className="chapter">Price history</span>
-          <Dinamics />
-          <Table />
+          <span className="caption">Game of Thrones</span>
+          <span className="chapter"><a>Ends in</a></span>
+          <div className='container-timer'>
+          <span className="timer">20</span>
+          <span className="timer">15</span>
+          <span className="timer">06</span>
+          <span className="timer">30</span>
+          </div>
+          
+          {/* <Statistics /> */}
+          <Container />
+          <SeeSaw />
+          <ContainerCard>
+            <div className="container-card-text">
+              <div className="container-card-statistics">
+                <Card title="11 ETH" value="Raised" />
+                <Card title="0.01 ETH" value="Price" />
+              </div>
+              <div className="container-text">
+                <div className="paragraph">Get <a>THC</a> and participate <br /> in foundation</div>
+                <div className="paragraph">Get 10% of CYBs for ETH</div>
+              </div>
+            </div>
+            <div className="container-card-text">
+              <div className="container-card-statistics">
+                <Card title="10 ATOM" value="Raised" />
+                <Card title="0.01 ATOM" value="Price" />
+              </div>
+              <div className="container-text">
+                <div className="paragraph">Don't Get <a>THC</a></div>
+                <div className="paragraph">Get 10% of CYBs for ATOM</div>
+              </div>
+            </div>
+          </ContainerCard>
+          <div className='container-btn'><button className='btn'>THC in Uniswap</button></div>
+          {/* <Dinamics /> */}
+          {/* <Table /> */}
         </main>
         <ActionBar />
       </span>

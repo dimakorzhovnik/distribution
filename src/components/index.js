@@ -12,3 +12,6 @@ export { Dinamics } from './dinamics/dinamics';
 export { Statistics } from './statistics/statistics';
 export { Table } from './table/table';
 export { ActionBar } from './actionBar/actionBar';
+export { SeeSaw } from './SeeSaw/SeeSaw';
+export { Container } from './container/container';
+export { Card, ContainerCard } from './statistics/item';
