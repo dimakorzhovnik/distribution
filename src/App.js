@@ -17,7 +17,8 @@ import {
   SeeSaw,
   Container,
   Card,
-  ContainerCard
+  ContainerCard,
+  Timer
 } from './components';
 import './main.css';
 
@@ -263,10 +264,7 @@ class App extends PureComponent {
           <span className="caption">Game of Thrones</span>
           <span className="chapter"><a>Ends in</a></span>
           <div className='container-timer'>
-          <span className="timer">20</span>
-          <span className="timer">15</span>
-          <span className="timer">06</span>
-          <span className="timer">30</span>
+          <Timer />
           </div>
           
           {/* <Statistics /> */}
