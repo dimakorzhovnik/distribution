@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export const Container = ({ children }) => <div className='container-statistics'>{children}</div>;
+export const ContainerCard = ({ children }) => <div className='container-statistics'>{children}</div>;
 
 export const Indicators = ({ title, value }) => (
   <div className='contaiter-indicator'>
