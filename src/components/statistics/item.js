@@ -16,3 +16,11 @@ export const Card = ({ title, value }) => (
     <span className='card-value'>{value}</span>
   </div>
 );
+
+export const CardArrow = ({ title, value, win }) => (
+  <div className='container-card-arrow'>
+    <div className='card-title'>{title}</div>
+    <div className={`card-arrow ${win === 'eth' ? 'card-arrow-transfonm-eth' : win === 'atom' ? 'card-arrow-transfonm-atom': ''}`}></div>
+    <div className='card-value'>{value}</div>
+  </div>
+);

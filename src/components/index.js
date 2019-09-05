@@ -16,3 +16,4 @@ export { SeeSaw } from './SeeSaw/SeeSaw';
 export { Container } from './container/container';
 export { Card, ContainerCard } from './statistics/item';
 export { Timer } from './timer/timer';
+export { CardArrow } from './statistics/item';

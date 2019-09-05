@@ -40,9 +40,9 @@ export class Timer extends Component {
       }
       this.setState({
         days: t.days,
-        hours: t.hours,
-        minutes: t.minutes,
-        seconds: t.seconds
+        hours: `0${t.hours}`.slice(-2),
+        minutes: `0${t.minutes}`.slice(-2),
+        seconds: `0${t.seconds}`.slice(-2)
       });
       //   console.log(t.total);
       //   if (t.total <= 0) {
@@ -86,23 +86,32 @@ export class Timer extends Component {
 
     return (
       <div>
-        <div id="deadline-message" className="deadline-message">
-          Time is up!
-        </div>
         {time && (
-          <div id="countdown" className="countdown">
-            <div className="countdown-number">
-              <span className="days countdown-time">{days}</span>
-            </div>
-            <div className="countdown-number">
-              <span className="hours countdown-time">{hours}</span>
-            </div>
-            <div className="countdown-number">
-              <span className="minutes countdown-time">{minutes}</span>
-            </div>
-            <div className="countdown-number">
-              <span className="seconds countdown-time">{seconds}</span>
-            </div>
+          <div className="countdown">
+            <span
+              className="countdown-time text-glich"
+              data-text={days}
+            >
+              {days}
+              {/* <span className="countdown-time text-glich" data-text="days">
+                days
+              </span> */}
+            </span>
+            <span className="countdown-time text-glich" data-text={hours}>
+              {hours}
+            </span>
+            {/* <span className="countdown-time text-glich no-margin" data-text=":">
+              :
+            </span> */}
+            <span className="countdown-time text-glich" data-text={minutes}>
+              {minutes}
+            </span>
+            {/* <span className="countdown-time text-glich no-margin" data-text=":">
+              :
+            </span> */}
+            <span className="countdown-time text-glich" data-text={seconds}>
+              {seconds}
+            </span>
           </div>
         )}
       </div>

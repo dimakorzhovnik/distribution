@@ -18,7 +18,8 @@ import {
   Container,
   Card,
   ContainerCard,
-  Timer
+  Timer,
+  CardArrow
 } from './components';
 import './main.css';
 
@@ -53,7 +54,8 @@ class App extends PureComponent {
       talks: {},
       purchasedTickets: null,
       userHasTicket: false,
-      ticket: null
+      ticket: null,
+      wins: ''
     };
   }
 
@@ -244,6 +246,18 @@ class App extends PureComponent {
   //   }
   // };
 
+  onClikWinAtom = () => {
+    this.setState({
+      wins: 'atom'
+    });
+  };
+
+  onClikWinEth = () => {
+    this.setState({
+      wins: 'eth'
+    });
+  };
+
   getWarning = warning => this.setState({ warning });
 
   render() {
@@ -255,44 +269,52 @@ class App extends PureComponent {
       deposit,
       talks,
       userHasTicket,
-      purchasedTickets
+      purchasedTickets,
+      wins
     } = this.state;
 
     return (
       <span>
+        <button onClick={this.onClikWinAtom}>atom</button>
+        <button onClick={this.onClikWinEth}>eth</button>
         <main className="block-body">
           <span className="caption">Game of Thrones</span>
-          <span className="chapter"><a>Ends in</a></span>
-          <div className='container-timer'>
-          <Timer />
+          <span className="chapter">
+            <a>Ends in</a>
+          </span>
+          <div className="container-timer">
+            <Timer />
           </div>
-          
+
           {/* <Statistics /> */}
-          <Container />
-          <SeeSaw />
-          <ContainerCard>
-            <div className="container-card-text">
-              <div className="container-card-statistics">
+          <Container win={wins} />
+          <SeeSaw win={wins} />
+          <div className='container-statistics-3'>
                 <Card title="11 ETH" value="Raised" />
-                <Card title="0.01 ETH" value="Price" />
-              </div>
-              <div className="container-text">
-                <div className="paragraph">Get <a>THC</a> and participate <br /> in foundation</div>
-                <div className="paragraph">Get 10% of CYBs for ETH</div>
-              </div>
-            </div>
-            <div className="container-card-text">
-              <div className="container-card-statistics">
+            
+                <CardArrow win='eth' title="70%" value="Arbitrage opportunity" />
+      
                 <Card title="10 ATOM" value="Raised" />
-                <Card title="0.01 ATOM" value="Price" />
+     
+          </div>
+
+          <ContainerCard>
+            <div className="container-text">
+              <div className="paragraph">
+                Get <a>THC</a> and participate <br /> in foundation
               </div>
-              <div className="container-text">
-                <div className="paragraph">Don't Get <a>THC</a></div>
-                <div className="paragraph">Get 10% of CYBs for ATOM</div>
+              <div className="paragraph">Get 10% of CYBs for ETH</div>
+              <div className="paragraph">Price 0.01 ETH</div>
+            </div>
+            <div className="container-text">
+              <div className="paragraph">
+                Don't Get <a>THC</a>
               </div>
+              <div className="paragraph">Get 10% of CYBs for ATOM</div>
+              <div className="paragraph">Price 0.01 ATOM</div>
             </div>
           </ContainerCard>
-          <div className='container-btn'><button className='btn'>THC in Uniswap</button></div>
+          {/* <div className='container-btn'><button className='btn'>THC in Uniswap</button></div> */}
           {/* <Dinamics /> */}
           {/* <Table /> */}
         </main>
