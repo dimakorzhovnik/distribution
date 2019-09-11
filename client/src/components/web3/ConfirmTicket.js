@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export class ConfirmButton extends Component {
   constructor(props) {
     super(props);
-    this.smart = '0x61B81103e716B611Fff8aF5A5Dc8f37C628efb1E';
+    this.smart = '0x4DAA2327b41517099ac40368029567e3b23539FA';
   }
 
   checkout = () => {

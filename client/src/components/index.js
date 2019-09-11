@@ -14,6 +14,6 @@ export { Table } from './table/table';
 export { ActionBar } from './actionBar/actionBar';
 export { SeeSaw } from './SeeSaw/SeeSaw';
 export { Container } from './container/container';
-export { Card, ContainerCard } from './statistics/item';
 export { Timer } from './timer/timer';
-export { CardArrow } from './statistics/item';
+export { ContainerCard, Indicators, Card, CardArrow } from './statistics/item';
+export { Tooltip } from './tooltip/tooltip';

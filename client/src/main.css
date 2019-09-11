@@ -5,6 +5,9 @@
     font-style: normal;
 }
 
+@import './funding.css';
+@import './container-distribution.css';
+
 body {
     padding: 0;
     margin: 0;
@@ -250,7 +253,7 @@ span.right-input {
     grid-template-columns: 1fr 1fr;
     justify-items: center;
     width: 100%;
-    /* align-items: center; */
+    align-items: center;
     margin-bottom: 50px;
 }
 
@@ -260,7 +263,7 @@ span.right-input {
     display: flex;
     justify-content: space-around;
     width: 100%;
-    /* align-items: center; */
+    align-items: center;
     margin-bottom: 50px;
 }
 
@@ -274,7 +277,7 @@ span.right-input {
     display: inline-block;
     margin-bottom: 10px;
     color: #3ab793;
-    font-size: 30px;
+    font-size: 25px;
 }
 
 .indicator-value {
@@ -294,7 +297,9 @@ span.right-input {
     box-shadow: 0 0 5px #3ab793;
     border-radius: 10px;
     margin: 0 5px;
-    justify-content: space-evenly;
+    justify-content: center;
+    padding: 5px 10px;
+    min-height: 150px;
 }
 
 .card-arrow{
@@ -336,11 +341,26 @@ span.right-input {
 }
 
 .container-card-arrow .card-title {
-    display: inline-block;
+    /* display: inline-block; */
     /* margin-bottom: 15px; */
     color: #3ab793;
-    font-size: 25px;
+    font-size: 30px;
     line-height: 20px;
+    width: 90%;
+}
+
+.card-title.eth {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row-reverse;
+}
+
+.card-title.atom {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-direction: row;
 }
 
 .container-card-arrow .card-value {
@@ -358,7 +378,7 @@ span.right-input {
     align-items: center;
     background-color: #000000;
     width: 100%;
-    max-width: 150px;
+    /* max-width: 150px; */
     box-shadow: 0 0 5px #3ab793;
     border-radius: 10px;
     margin: 0 5px;
@@ -381,40 +401,6 @@ span.right-input {
     color: #3ab793;
     font-size: 20px;
     line-height: 20px;
-}
-
-.dots {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #3ab793;
-}
-
-.table {
-    margin-top: 20px;
-    width: 100%;
-}
-
-.table-header-rows {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    width: 100%;
-    border-bottom: 1px solid #fff;
-    margin-bottom: 10px;
-}
-
-.table-body {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.table-rows {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    width: 100%;
-    height: 30px;
-    align-items: center;
 }
 
 .caption {
@@ -533,7 +519,7 @@ span.right-input {
     position: absolute;
     width: 60px;
     height: 60px;
-    content: url(./img/Ethereum_logo_2014.svg);
+    content: url('./image/Ethereum_logo_2014.svg');
     left: 0px;
     bottom: 17px;
 }
@@ -541,7 +527,7 @@ span.right-input {
     position: absolute;
     width: 60px;
     height: 60px;
-    content: url(./img/cosmos-2.svg);
+    content: url('./image/cosmos-2.svg');
     right: 0px;
     bottom: 17px;
 }
@@ -555,7 +541,7 @@ span.right-input {
     transform-origin: bottom center;
 }
 .seesaw-bottom:after {
-    content: url(./img/Bitcoin.svg);
+    content: url('./image/Bitcoin.svg');
     position: absolute;
     bottom: 0;
     left: -40%;
@@ -609,7 +595,7 @@ span.right-input {
     width: 10rem;
     height: calc(10rem / 1.1);
     overflow: hidden;
-    content: url(./img/303278.svg);
+    content: url('./image/303278.svg');
     z-index: 1;
 }
 
@@ -621,7 +607,7 @@ span.right-input {
     width: 10rem;
     height: calc(10rem / 1.1);
     overflow: hidden;
-    content: url(./img/303278.svg);
+    content: url('./image/303278.svg');
     z-index: 1;
 }
 

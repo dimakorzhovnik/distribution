@@ -18,7 +18,7 @@ const DefinePluginConfig = new webpack.DefinePlugin({
 module.exports = {
   devServer: {
     host: 'localhost',
-    port: process.env.PORT_APP || '3019',
+    port: process.env.PORT_APP || '3000',
     hot: true,
     headers: {
       'Access-Control-Allow-Origin': '*'
@@ -33,8 +33,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js?$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
+        include: /src/,
         loaders: ['babel-loader']
       },
       {
@@ -63,7 +64,7 @@ module.exports = {
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loader: 'file-loader',
+        loader: 'url-loader',
         options: {
           outputPath: 'image/'
         }
@@ -71,12 +72,12 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.js']
+    extensions: ['*', '.js', '.jsx'],
+    alias: {}
   },
   output: {
     filename: 'index.js',
-    path: path.join(__dirname, '/build'),
-    publicPath: '/'
+    path: path.join(__dirname, '/build')
   },
   mode: dev ? 'development' : 'production',
   plugins: dev

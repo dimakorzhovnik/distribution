@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
-const vitalik = require('../../img/vitalik.png');
-const jae = require('../../img/jae.png');
+const vitalik = require('../../image/vitalik.png');
+const jae = require('../../image/jae.png');
 
 const Crown = () => <div className="crown" />;
 

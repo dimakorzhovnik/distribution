@@ -279,6 +279,7 @@ class App extends PureComponent {
         <button onClick={this.onClikWinEth}>eth</button>
         <main className="block-body">
           <span className="caption">Game of Thrones</span>
+          <Statistics />
           <span className="chapter">
             <a>Ends in</a>
           </span>
@@ -286,17 +287,16 @@ class App extends PureComponent {
             <Timer />
           </div>
 
-          {/* <Statistics /> */}
           <Container win={wins} />
           <SeeSaw win={wins} />
-          <div className='container-statistics-3'>
+          {/* <div className='container-statistics-3'>
                 <Card title="11 ETH" value="Raised" />
             
                 <CardArrow win='eth' title="70%" value="Arbitrage opportunity" />
       
                 <Card title="10 ATOM" value="Raised" />
      
-          </div>
+          </div> */}
 
           <ContainerCard>
             <div className="container-text">
@@ -304,14 +304,14 @@ class App extends PureComponent {
                 Get <a>THC</a> and participate <br /> in foundation
               </div>
               <div className="paragraph">Get 10% of CYBs for ETH</div>
-              <div className="paragraph">Price 0.01 ETH</div>
+              {/* <div className="paragraph">Price 0.01 ETH</div> */}
             </div>
             <div className="container-text">
               <div className="paragraph">
                 Don't Get <a>THC</a>
               </div>
               <div className="paragraph">Get 10% of CYBs for ATOM</div>
-              <div className="paragraph">Price 0.01 ATOM</div>
+              {/* <div className="paragraph">Price 0.01 ATOM</div> */}
             </div>
           </ContainerCard>
           {/* <div className='container-btn'><button className='btn'>THC in Uniswap</button></div> */}
