@@ -1,17 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Indicators, Card, ContainerCard } from '../../components/index';
 
-export class Statistics extends Component {
-  render() {
-    const {round, roundAll} = this.props;
-    return (
-      <ContainerCard col='5'>
-        <Indicators title={`${round} of ${roundAll}`} value='Round' />
-        <Indicators title='15 ETH' value='Raised' />
-        <Card title='0.01 ETH/GCYB' value='Current price' />
-        <Indicators title='1 hour' value='Left in round' />
-        <Indicators title='120 ETH' value='THC CAP' />
-      </ContainerCard>
-    );
-  }
-}
+export const Statistics = ({
+  round,
+  roundAll,
+  timeLeft,
+  currentPrice,
+  raised,
+  cap
+}) => (
+  <ContainerCard col="5">
+    <Indicators title={`${round} of ${roundAll}`} value="Round" />
+    <Indicators title={`${raised} ETH`} value="Raised" />
+    <Card title={`${currentPrice} ETH/GCYB`} value="Current price" />
+    <Indicators title={`${timeLeft} hour`} value="Left in round" />
+    <Indicators title={`${cap} ETH`} value="THC CAP" />
+  </ContainerCard>
+);

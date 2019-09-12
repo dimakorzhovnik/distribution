@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Plotly from 'react-plotly.js';
-import { x, y } from './list';
-
+// import { x, y } from './list';
 
 // const arr = [];
 // for (let i = 0, l = 250; i < 300; ++i) {
@@ -10,33 +9,52 @@ import { x, y } from './list';
 
 export class Dinamics extends Component {
   render() {
+      let x = this.props.data.x;
+      let y = this.props.data.y;
+      let x1 = this.props.data.x1;
+      let y1 = this.props.data.y1;
+
+
+      console.log(x1,y1);
+
     const trace1 = {
       type: 'scatter',
-      opacity: 0.8,
-
       mode: 'line',
-      x: y,
-      y: x,
+      x: y1,
+      y: x1,
+      yaxis: 'y2',
       line: {
         color: '#36d6ae'
       },
-      hovertemplate: '1 THC <br>'+'price: %{y: .2f}<br>' + 'volume: <br>'+'<extra></extra>'
+      hovertemplate: '1 THC <br>'+'price: %{y: .20f}<br>'+'<extra></extra>'
     };
 
     const trace2 = {
       opacity: 0.6,
-      type: 'histogram',
-      x: y,
-      y: x,
-      hoverinfo: 'skip',
+      type: 'bar',
+      x: x,
+      y: y,
+        bargap:0,
+      hovertemplate: 'volume:  %{y: .2f} <br>'+'<extra></extra>',
       marker: {
         color: '#36d6ae'
-      }
+      },
+        mode: 'lines'
     };
+
+
+      // var trace1 = {
+      //     x: x,
+      //     y: y,
+      //     // mode: 'lines',
+      //     type: 'bar',
+      //     name: '2000'
+      // };
 
     const data = [trace1, trace2];
 
     const layout = {
+        bargap:0,
       paper_bgcolor: '#000',
       plot_bgcolor: '#000',
       showlegend: false,
@@ -54,8 +72,9 @@ export class Dinamics extends Component {
         spikecolor: '#fff',
         spikethickness : 1,
         spikedash : 'solid',
-
-
+          gridwidth: 2,
+          zeroline: false,
+          bargap:0,
         // title: {
         //   text: 'ATOM'
         // },
@@ -65,13 +84,26 @@ export class Dinamics extends Component {
           color: '#fff'
         }
       },
+      yaxis2: {
+        title: 'yaxis2 title', 
+        titlefont: {color: 'rgb(148, 103, 189)'}, 
+        tickfont: {color: 'rgb(148, 103, 189)'}, 
+        overlaying: 'y', 
+        side: 'right'
+      },
       xaxis: {
-        type: 'date',
+        // type: 'date',
+        // tickmode: "linear",
+        range: x,
+          tick0: x[0],
+          // dtick: 24*60*60*1000, // 7 days
         spikemode: 'across',
         showspikes: true,
         spikecolor: '#fff',
         spikethickness : 1,
         spikedash : 'solid',
+          gridwidth: 2,
+          zeroline: false,
 
         // title: {
         //   text: '%'
@@ -80,7 +112,7 @@ export class Dinamics extends Component {
         // color: '#fff',
         tickfont: {
           color: '#fff'
-        }
+        },
         // zeroline: false
       }
 
@@ -100,7 +132,7 @@ export class Dinamics extends Component {
       // scrollZoom: false,
       responsive: true
     };
-//  console.log(data);
+
     return <Plotly data={data} layout={layout} config={config} />;
   }
 }

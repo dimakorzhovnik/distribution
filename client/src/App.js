@@ -21,7 +21,7 @@ import {
   Timer,
   CardArrow
 } from './components';
-import './main.css';
+// import './main.css';
 
 // const getDateString = uint256 => {
 //   const date = new Date(uint256 * 1000);
