@@ -6,6 +6,8 @@ import { Dinamics } from './dinamics';
 import { Table } from './table';
 import { Loading } from '../../components/index';
 
+const TOKEN_NAME = 'GGOL';
+
 const formatNumber = (number, toFixed) => {
   let formatted = +number;
 
@@ -208,7 +210,7 @@ class Auction extends PureComponent {
           6
         );
         // TODO
-        if (item <= today) {
+        // if (item <= today) {
           const dt = await methods.dailyTotals(item).call();
           raised += parseFloat(dt) / Math.pow(10, 18);
 
@@ -247,8 +249,18 @@ class Auction extends PureComponent {
 
           //
           // console.log({_raised})
-
+          const distValue =
+            Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100;
+          const dailyValue =
+            Math.floor((_dailyTotals / Math.pow(10, 18)) * 10000) / 10000;
+          const userBuy = _userBuys / Math.pow(10, 18);
           const _youCYB = youCYB.filter(i => +i.returnValues.window === +item);
+          let cyb;
+          if (_userBuys == 0) {
+            cyb = 0;
+          } else {
+            cyb = (distValue / dailyValue) * userBuy;
+          }
 
           table.push({
             period: item,
@@ -262,14 +274,14 @@ class Auction extends PureComponent {
                   10000
                 : Math.floor(((23 * item) / 24) * 10000) / 10000,
             youETH: _userBuys / Math.pow(10, 18),
-            youCYB: _youCYB.length ? _youCYB[0].returnValues.amount : '0'
+            youCYB: cyb
+            // _youCYB.length ? _youCYB[0].returnValues.amount : '0'
           });
-
           // console.log('CR', {_createOnDay, _dailyTotals, today}, (_createOnDay/Math.pow(10,18)  +  _dailyTotals/2) /_dailyTotals);
-        }
+        // }
       }
     );
-    console.log(table, dynamics);
+    // console.log(table, dynamics);
     this.setState({ table, dynamics, loading: false });
     this.setState({ raised });
   };
@@ -299,6 +311,7 @@ class Auction extends PureComponent {
             currentPrice={currentPrice}
             raised={Math.round(raised * 10000) / 10000}
             cap={formatNumber(thc * currentPrice)}
+            TOKEN_NAME={TOKEN_NAME}
           />
           {loading && (
             <div className="container-loading">
@@ -308,11 +321,16 @@ class Auction extends PureComponent {
           {!loading && <Dinamics data={dynamics} />}
           {!loading && (
             <div style={{ marginTop: '0', width: '100%' }}>
-              <Table data={table} />
+              <Table data={table} TOKEN_NAME={TOKEN_NAME} />
             </div>
           )}
         </main>
-        <ActionBar />
+        <ActionBar
+          web3={this.props.web3}
+          contract={this.props.contract}
+          minRound={roundThis}
+          maxRound={numberOfDays}
+        />
       </span>
     );
   }
