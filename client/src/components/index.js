@@ -17,3 +17,4 @@ export { Container } from './container/container';
 export { Timer } from './timer/timer';
 export { ContainerCard, Indicators, Card, CardArrow } from './statistics/item';
 export { Tooltip } from './tooltip/tooltip';
+export { Loading } from './ui/loading';

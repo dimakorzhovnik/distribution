@@ -1,6 +1,12 @@
 .auction .table-rows {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
+            150px,
+            1.67fr
+        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
+            150px,
+            1.67fr
+        );
     width: 100%;
     height: 30px;
     align-items: center;
@@ -8,7 +14,13 @@
 
 .auction .table-header-rows {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
+            150px,
+            1.67fr
+        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
+            150px,
+            1.67fr
+        );
     width: 100%;
     border-bottom: 1px solid #fff;
     margin-bottom: 10px;

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import waitForWeb3 from './waitForWeb3';
 import { abi } from '../../utils/abi';
-// import Auction from '../../../../build/contracts/Auction.json';
+import AuctionUtils from '../../../../build/contracts/AuctionUtils.json';
 
 const injectWeb3 = InnerComponent =>
   class extends PureComponent {
@@ -11,10 +11,13 @@ const injectWeb3 = InnerComponent =>
         web3: null,
         contract: null,
         loading: true,
-        accounts: null
+        accounts: null,
+        contractAuctionUtils: null
       };
       this.getWeb3 = this.getWeb3.bind(this);
       this.smart = '0x6C9c39D896B51e6736DBd3dA710163903A3B091B';
+      this.smartAuctionUtils = '0x303Fb6bA398F2039b3AE56AB472D80839463E7dF';
+
     }
 
     componentDidMount() {
@@ -26,10 +29,16 @@ const injectWeb3 = InnerComponent =>
       try {
         const web3 = await waitForWeb3();
         const contract = await new web3.eth.Contract(abi, this.smart);
+        const contractAuctionUtils = await new web3.eth.Contract(
+          AuctionUtils.abi,
+          this.smartAuctionUtils
+        );
+        // console.log(contract);
         const accounts = await web3.eth.getAccounts();
         this.setState({
           web3,
           contract,
+          contractAuctionUtils,
           accounts: accounts[0]
         });
       } catch (e) {
@@ -38,7 +47,13 @@ const injectWeb3 = InnerComponent =>
     }
 
     render() {
-      const { web3, contract, loading, accounts } = this.state;
+      const {
+        web3,
+        contract,
+        loading,
+        accounts,
+        contractAuctionUtils
+      } = this.state;
       if (loading) {
         return <p>...</p>;
       }
@@ -48,6 +63,7 @@ const injectWeb3 = InnerComponent =>
           web3={web3}
           contract={contract}
           accounts={accounts}
+          contractAuctionUtils={contractAuctionUtils}
           {...this.props}
         />
       );

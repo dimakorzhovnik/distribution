@@ -14,9 +14,6 @@ export class Dinamics extends Component {
       let x1 = this.props.data.x1;
       let y1 = this.props.data.y1;
 
-
-      console.log(x1,y1);
-
     const trace1 = {
       type: 'scatter',
       mode: 'line',
@@ -26,7 +23,7 @@ export class Dinamics extends Component {
       line: {
         color: '#36d6ae'
       },
-      hovertemplate: '1 THC <br>'+'price: %{y: .20f}<br>'+'<extra></extra>'
+      hovertemplate: '1 THC <br>'+'price: %{y: .6f}<br>'+'<extra></extra>'
     };
 
     const trace2 = {
@@ -66,66 +63,61 @@ export class Dinamics extends Component {
       },
       // scene: {
       yaxis: {
+        title: 'Volume', 
         type: 'linear',
         spikemode: 'across',
         showspikes: true,
         spikecolor: '#fff',
         spikethickness : 1,
         spikedash : 'solid',
-          gridwidth: 2,
-          zeroline: false,
-          bargap:0,
-        // title: {
-        //   text: 'ATOM'
-        // },
+        gridwidth: 1,
+        zeroline: true,
+        zerolinecolor: '#fff',
+        zerolinewidth: 1,
+          // bargap:0,
         gridcolor: '#ffffff42',
-        // color: '#fff',
+        titlefont: {color: '#fff'}, 
         tickfont: {
-          color: '#fff'
+          color: '#fff',
+          size: 9
         }
       },
       yaxis2: {
-        title: 'yaxis2 title', 
-        titlefont: {color: 'rgb(148, 103, 189)'}, 
-        tickfont: {color: 'rgb(148, 103, 189)'}, 
+        title: 'Price', 
+        titlefont: {color: '#fff'}, 
+        tickfont: {color: '#fff', size: 9}, 
         overlaying: 'y', 
         side: 'right'
       },
       xaxis: {
         // type: 'date',
         // tickmode: "linear",
+        title: 'Round', 
         range: x,
-          tick0: x[0],
+        tick0: x[0],
           // dtick: 24*60*60*1000, // 7 days
         spikemode: 'across',
         showspikes: true,
         spikecolor: '#fff',
         spikethickness : 1,
         spikedash : 'solid',
-          gridwidth: 2,
-          zeroline: false,
-
-        // title: {
-        //   text: '%'
-        // },
+        gridwidth: 1,
+        zeroline: true,
+        zerolinecolor: '#fff',
+        zerolinewidth: 1,
+          // zeroline: false,
         gridcolor: '#ffffff42',
-        // color: '#fff',
+        titlefont: {color: '#fff'},
         tickfont: {
-          color: '#fff'
+          color: '#fff',
+          size: 9
         },
-        // zeroline: false
-      }
+      },
 
       // }
       // width: 550,
       // height: 500,
-      // margin: {
-      //   l: 0,
-      //   r: 0,
-      //   b: 0,
-      //   t: 0,
-      //   pad: 4
-      // }
+
     };
     const config = {
       displayModeBar: false,

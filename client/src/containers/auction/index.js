@@ -4,6 +4,17 @@ import { Statistics } from './statistics';
 import { ActionBar } from './actionBar';
 import { Dinamics } from './dinamics';
 import { Table } from './table';
+import { Loading } from '../../components/index';
+
+const formatNumber = (number, toFixed) => {
+  let formatted = +number;
+
+  if (toFixed) {
+    formatted = +formatted.toFixed(toFixed);
+  }
+
+  return formatted.toLocaleString('en').replace(/,/g, ' ');
+};
 
 const run = async func => {
   try {
@@ -11,6 +22,10 @@ const run = async func => {
   } catch (error) {
     setTimeout(run, 1000, func);
   }
+};
+
+const timer = func => {
+  setInterval(func, 1000);
 };
 
 const asyncForEach = async (array, callback) => {
@@ -52,6 +67,7 @@ class Auction extends PureComponent {
       timeLeft: 0,
       currentPrice: 0,
       raised: 0,
+      loading: true,
       numberOfDays: 0,
       dynamics: {
         x: [],
@@ -65,23 +81,12 @@ class Auction extends PureComponent {
   async componentDidMount() {
     run(this.statistics);
     run(this.dinamics);
-
+    // timer(this.endRound);
+    timer(this.getTimeEndRound);
     const {
       contract: { methods },
       accounts
     } = this.props;
-    const time = await methods.time().call();
-    const startTime = await methods.startTime().call();
-    const openTime = await methods.openTime().call();
-    const today = parseInt(await methods.today().call());
-
-    // console.log({time, startTime, today}, new Date(parseFloat(time)*1000), new Date(parseFloat(startTime)*1000));
-
-    const dailyTotals = await methods.dailyTotals(today).call();
-    const createOnDay = await methods.createOnDay(today).call();
-    const numberOfDays = await methods.numberOfDays().call();
-
-    // console.log('LEFT', (today * 23*60*60 -  (parseFloat(time) - parseFloat(startTime) ) )/60/60);
 
     const { contract } = this.props;
     const youCYB = (await contract.getPastEvents('LogClaim', {
@@ -92,109 +97,29 @@ class Auction extends PureComponent {
     console.log({
       youCYB
     });
-
-    const raised = 0;
-    const table = [];
-
-    const dynamics = {
-      x: [],
-      y: [],
-      x1: [],
-      y1: [],
-      time: []
-    };
-
-    // await asyncForEach(Array.from(Array(today + 1).keys()), async item => {
-    //   // TODO
-    //   if (item <= today) {
-    //     const dt = await methods.dailyTotals(item).call();
-    //     raised += parseFloat(dt) / Math.pow(10, 18);
-
-    //     const _createOnDay = await methods.createOnDay(item).call();
-    //     const _dailyTotals = await methods.dailyTotals(item).call();
-    //     // let _currentPrice = ((_createOnDay*Math.pow(10,18)  +  _dailyTotals/2) /_dailyTotals) / Math.pow(10,18);
-    //     const _currentPrice = roundNumber(
-    //       _dailyTotals / (_createOnDay * Math.pow(10, 9)),
-    //       6
-    //     ); // ((*Math.pow(10,18)  +  _dailyTotals/2) /) / Math.pow(10,18);
-    //     // const _currentPriceRound =
-    //     //   Math.round((_currentPrice / Math.pow(10, 5)) * 1000000) / 1000000;
-    //     const _userBuys = await methods.userBuys(item, accounts).call();
-    //     console.log(raised);
-
-    //     const _raised = parseFloat(dt) / Math.pow(10, 18);
-    //     // console.log(Math.round((_currentPrice / Math.pow(10, 18))*1000000)/1000000);
-    //     this.setState({ currentPrice: _currentPrice });
-
-    //     // alert()  + item*23*60*60
-
-    //     if (item === 0) {
-    //       dynamics.x.push(
-    //         item
-    //         // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
-    //       );
-    //       dynamics.y.push(_raised);
-    //       dynamics.time.push(startTime * 1000 + 1000 * 60 * 60);
-
-    //       dynamics.y1.push(
-    //         item
-    //         // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
-    //       );
-    //       dynamics.x1.push(_currentPrice);
-    //     } else {
-    //       const nextTime = dynamics.time[dynamics.time.length - 1];
-
-    //       dynamics.x.push(
-    //         item
-    //         // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
-    //       );
-    //       dynamics.y.push(_raised);
-
-    //       dynamics.y1.push(
-    //         item
-    //         // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
-    //       );
-    //       dynamics.x1.push(_currentPrice);
-    //     }
-
-    //     //
-    //     // console.log({_raised})
-
-    //     const _youCYB = youCYB.filter(i => +i.returnValues.window === +item);
-
-    //     table.push({
-    //       period: item,
-    //       dist: _createOnDay,
-    //       total: Math.round((_dailyTotals / Math.pow(10, 18)) * 10000) / 10000,
-    //       price: _currentPrice,
-    //       closing:
-    //         item === 0
-    //           ? Math.round(((startTime - openTime) / 60 / 60 / 24) * 10000) /
-    //             10000
-    //           : Math.round(((23 * item) / 24) * 10000) / 10000,
-    //       youETH: _userBuys / Math.pow(10, 18),
-    //       youCYB: _youCYB.length ? _youCYB[0].returnValues.amount : ''
-    //     });
-
-    //     // console.log('CR', {_createOnDay, _dailyTotals, today}, (_createOnDay/Math.pow(10,18)  +  _dailyTotals/2) /_dailyTotals);
-    //   }
-    // });
-
-    // this.setState({ table, dynamics });
-
-    // console.log({ numberOfDays, createOnDay });
-
-    // this.setState({ raised });
-    // this.setState({ numberOfDays });
-
-    // this.setState({
-    //   timeLeft:
-    //     Math.round(
-    //       parseFloat(
-    //         (today * 23 * 60 * 60 - (parseFloat(time) - parseFloat(startTime))) /
-    //           60 / 60 ) * 1000 ) / 1000
-    // });
   }
+
+  getTimeEndRound = async () => {
+    const {
+      contract: { methods }
+    } = this.props;
+    const today = parseInt(await methods.today().call());
+    const time = await methods.time().call();
+    const startTime = await methods.startTime().call();
+
+    const times = parseFloat(
+      today * 23 * 60 * 60 - (parseFloat(time) - parseFloat(startTime))
+    );
+    const hours = Math.floor((times / (60 * 60)) % 24);
+    const minutes = Math.floor((times / 60) % 60);
+
+    const h = `0${hours}`.slice(-2);
+    const m = `0${minutes}`.slice(-2);
+    const timeLeft = `${h} : ${m}`;
+    this.setState({
+      timeLeft
+    });
+  };
 
   statistics = async () => {
     const {
@@ -213,27 +138,28 @@ class Auction extends PureComponent {
       6
     );
 
-    const timeLeft =
-      (await Math.round(
-        parseFloat(
-          (today * 23 * 60 * 60 - (parseFloat(time) - parseFloat(startTime))) /
-            60 /
-            60
-        ) * 1000
-      )) / 1000;
-    console.log(timeLeft);
+    // const timeLeft =
+    //   (await Math.round(
+    //     parseFloat(
+    //       (today * 23 * 60 * 60 - (parseFloat(time) - parseFloat(startTime))) /
+    //         60 /
+    //         60
+    //     ) * 1000
+    //   )) / 1000;
+    // console.log(timeLeft);
+
     return this.setState({
       roundThis,
       currentPrice,
-      numberOfDays,
-      timeLeft
+      numberOfDays
+      // timeLeft
     });
   };
 
   dinamics = async () => {
-    // const {currentPrice}= this.state;
     const {
       contract: { methods },
+      contractAuctionUtils,
       accounts
     } = this.props;
     const { contract } = this.props;
@@ -259,76 +185,93 @@ class Auction extends PureComponent {
     const today = parseInt(await methods.today().call());
     const startTime = await methods.startTime().call();
     const openTime = await methods.openTime().call();
+    const createPerDay = await methods.createPerDay().call();
+    const createFirstDay = await methods.createFirstDay().call();
 
-    await asyncForEach(Array.from(Array(today + 1).keys()), async item => {
-      const _createOnDay = await methods.createOnDay(item).call();
-      const _dailyTotals = await methods.dailyTotals(item).call();
-      const currentPrice = roundNumber(
-        _dailyTotals / (_createOnDay * Math.pow(10, 9)),
-        6
-      );
-      // TODO
-      if (item <= today) {
-        const dt = await methods.dailyTotals(item).call();
-        raised += parseFloat(dt) / Math.pow(10, 18);
-
-        const _userBuys = await methods.userBuys(item, accounts).call();
-
-        const _raised = parseFloat(dt) / Math.pow(10, 18);
-
+    const dailyTotalsUtils = await contractAuctionUtils.methods
+      .dailyTotals()
+      .call();
+    const dailyTotals = dailyTotalsUtils;
+    await asyncForEach(
+      Array.from(Array(dailyTotalsUtils.length).keys()),
+      async item => {
+        let createOnDay;
         if (item === 0) {
-          dynamics.x.push(
-            item
-            // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
-          );
-          dynamics.y.push(_raised);
-          dynamics.time.push(startTime * 1000 + 1000 * 60 * 60);
-
-          dynamics.y1.push(
-            item
-            // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
-          );
-          dynamics.x1.push(currentPrice);
+          createOnDay = createFirstDay;
         } else {
-          const nextTime = dynamics.time[dynamics.time.length - 1];
-
-          dynamics.x.push(
-            item
-            // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
-          );
-          dynamics.y.push(_raised);
-
-          dynamics.y1.push(
-            item
-            // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
-          );
-          dynamics.x1.push(currentPrice);
+          createOnDay = createPerDay;
         }
 
-        //
-        // console.log({_raised})
+        const _dailyTotals = dailyTotals[item];
+        const currentPrice = roundNumber(
+          _dailyTotals / (createOnDay * Math.pow(10, 9)),
+          6
+        );
+        // TODO
+        if (item <= today) {
+          const dt = await methods.dailyTotals(item).call();
+          raised += parseFloat(dt) / Math.pow(10, 18);
 
-        const _youCYB = youCYB.filter(i => +i.returnValues.window === +item);
+          const _userBuys = await methods.userBuys(item, accounts).call();
 
-        table.push({
-          period: item,
-          dist: _createOnDay,
-          total: Math.round((_dailyTotals / Math.pow(10, 18)) * 10000) / 10000,
-          price: currentPrice,
-          closing:
-            item === 0
-              ? Math.round(((startTime - openTime) / 60 / 60 / 24) * 10000) /
-                10000
-              : Math.round(((23 * item) / 24) * 10000) / 10000,
-          youETH: _userBuys / Math.pow(10, 18),
-          youCYB: _youCYB.length ? _youCYB[0].returnValues.amount : ''
-        });
+          const _raised = parseFloat(dt) / Math.pow(10, 18);
 
-        // console.log('CR', {_createOnDay, _dailyTotals, today}, (_createOnDay/Math.pow(10,18)  +  _dailyTotals/2) /_dailyTotals);
+          if (item === 0) {
+            dynamics.x.push(
+              item
+              // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
+            );
+            dynamics.y.push(_raised);
+            dynamics.time.push(startTime * 1000 + 1000 * 60 * 60);
+
+            dynamics.y1.push(
+              item
+              // new Date(startTime * 1000 + 1000 * 60 * 60).toShortFormat()
+            );
+            dynamics.x1.push(currentPrice);
+          } else {
+            const nextTime = dynamics.time[dynamics.time.length - 1];
+
+            dynamics.x.push(
+              item
+              // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
+            );
+            dynamics.y.push(_raised);
+
+            dynamics.y1.push(
+              item
+              // new Date(nextTime + 1000 * 23 * 60 * 60).toShortFormat()
+            );
+            dynamics.x1.push(currentPrice);
+          }
+
+          //
+          // console.log({_raised})
+
+          const _youCYB = youCYB.filter(i => +i.returnValues.window === +item);
+
+          table.push({
+            period: item,
+            dist: Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100,
+            total:
+              Math.floor((_dailyTotals / Math.pow(10, 18)) * 10000) / 10000,
+            price: currentPrice,
+            closing:
+              item === 0
+                ? Math.floor(((startTime - openTime) / 60 / 60 / 24) * 10000) /
+                  10000
+                : Math.floor(((23 * item) / 24) * 10000) / 10000,
+            youETH: _userBuys / Math.pow(10, 18),
+            youCYB: _youCYB.length ? _youCYB[0].returnValues.amount : '0'
+          });
+
+          // console.log('CR', {_createOnDay, _dailyTotals, today}, (_createOnDay/Math.pow(10,18)  +  _dailyTotals/2) /_dailyTotals);
+        }
       }
-    });
-
-    this.setState({ table, dynamics });
+    );
+    console.log(table, dynamics);
+    this.setState({ table, dynamics, loading: false });
+    this.setState({ raised });
   };
 
   render() {
@@ -339,10 +282,13 @@ class Auction extends PureComponent {
       timeLeft,
       currentPrice,
       raised,
-      dynamics
+      dynamics,
+      loading
     } = this.state;
-    // console.log(raised);
-    const thc = 70 * Math.pow(10, 12);
+    const thc = 70 * Math.pow(10, 13);
+    // if (loading) {
+    //   return <p>...</p>;
+    // }
     return (
       <span>
         <main className="block-body auction">
@@ -352,12 +298,19 @@ class Auction extends PureComponent {
             timeLeft={timeLeft}
             currentPrice={currentPrice}
             raised={Math.round(raised * 10000) / 10000}
-            cap={roundNumber(raised * currentPrice, 6)}
+            cap={formatNumber(thc * currentPrice)}
           />
-          <Dinamics data={dynamics} />
-          <div style={{ marginTop: '500px', width: '100%' }}>
-            <Table data={table} />
-          </div>
+          {loading && (
+            <div className="container-loading">
+              <Loading />
+            </div>
+          )}
+          {!loading && <Dinamics data={dynamics} />}
+          {!loading && (
+            <div style={{ marginTop: '0', width: '100%' }}>
+              <Table data={table} />
+            </div>
+          )}
         </main>
         <ActionBar />
       </span>
