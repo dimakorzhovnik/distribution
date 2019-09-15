@@ -11,25 +11,59 @@ Array.prototype.max = function() {
 };
 
 export class Dinamics extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      price: '',
+      volume: '',
+      round: ''
+    };
+  }
+
+  componentDidMount() {
+    const { round, price, volume } = this.props;
+    this.setState({
+      price,
+      round,
+      volume
+    });
+  }
+
+  plotlyHover = dataPoint => {
+    this.setState({
+      price: dataPoint.points[0].y,
+      round: dataPoint.points[0].x,
+      volume: dataPoint.points[1].y
+    });
+  };
+
+  plotUnhover = () => {
+    const { round, price, volume } = this.props;
+    this.setState({
+      price,
+      round,
+      volume
+    });
+  };
+
   render() {
     const { x } = this.props.data;
     const { y } = this.props.data;
     const { x1 } = this.props.data;
-    const { y1 } = this.props.data;
+    const { price, volume, round } = this.state;
 
-  
     /* let x; */
-    let _yaxis = y.max() / 0.3;
+    const _yaxis = y.max() / 0.3;
 
     const trace1 = {
       type: 'scatter',
       mode: 'line',
-      x: y1,
+      x,
       y: x1,
       line: {
         color: '#36d6ae'
       },
-      hovertemplate: '1 THC <br>' + 'price: %{y: .6f}<br>' + '<extra></extra>'
+      hoverinfo: 'none'
     };
 
     const trace2 = {
@@ -38,11 +72,10 @@ export class Dinamics extends Component {
       x,
       y,
       yaxis: 'y2',
-      hovertemplate: 'volume:  %{y: .2f} <br>' + '<extra></extra>',
+      hoverinfo: 'none',
       marker: {
         color: '#36d6ae'
-      },
-      mode: 'lines'
+      }
     };
 
     // var trace1 = {
@@ -60,6 +93,7 @@ export class Dinamics extends Component {
       paper_bgcolor: '#000',
       plot_bgcolor: '#000',
       showlegend: false,
+      hovermode: 'x',
       hoverlabel: {
         bgcolor: '#000',
         font: {
@@ -70,6 +104,9 @@ export class Dinamics extends Component {
       yaxis: {
         title: 'Price',
         type: 'linear',
+        rangemode: 'tozero',
+        ticklen: 10,
+        tickcolor: '#000',
         spikemode: 'across',
         showspikes: true,
         side: 'right',
@@ -78,8 +115,6 @@ export class Dinamics extends Component {
         spikedash: 'solid',
         gridwidth: 1,
         zeroline: false,
-        zerolinecolor: '#fff',
-        zerolinewidth: 1,
         // bargap:0,
         gridcolor: '#ffffff42',
         titlefont: { color: '#fff' },
@@ -107,9 +142,10 @@ export class Dinamics extends Component {
         // side: 'right'
       },
       xaxis: {
-        // type: 'date',
-        // tickmode: "linear",
+
         title: 'Round',
+        ticklen: 10,
+        tickcolor: '#000',
         range: x,
         tick0: x[0],
         // dtick: 24*60*60*1000, // 7 days
@@ -120,9 +156,6 @@ export class Dinamics extends Component {
         spikedash: 'solid',
         gridwidth: 1,
         zeroline: false,
-        zerolinecolor: '#fff',
-        zerolinewidth: 1,
-        // zeroline: false,
         gridcolor: '#ffffff42',
         titlefont: { color: '#fff' },
         tickfont: {
@@ -138,9 +171,36 @@ export class Dinamics extends Component {
     const config = {
       displayModeBar: false,
       // scrollZoom: false,
-      responsive: true
+      responsive: true,
+      showSendToCloud: true
     };
 
-    return <Plotly data={data} layout={layout} config={config} />;
+    return (
+      <div className="container-dinamics">
+        <div className="statistics-plot">
+          <div>
+            prise: <span>{price}</span>
+          </div>
+          <div style={{ margin: '0 5px' }}>
+            round: <span>{round}</span>
+          </div>
+          <div>
+            volume: <span>{volume}</span>
+          </div>
+        </div>
+        <Plotly
+          data={data}
+          layout={layout}
+          onHover={figure => this.plotlyHover(figure)}
+          onUnhover={figure => this.plotUnhover(figure)}
+          config={config}
+          style={{
+            position: 'relative',
+            display: 'block',
+            width: '100%'
+          }}
+        />
+      </div>
+    );
   }
 }

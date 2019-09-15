@@ -1,12 +1,8 @@
 .auction .table-rows {
     display: grid;
-    grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
-            1.67fr
-        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
-            1.67fr
-        );
+    grid-template-columns:
+        minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(150px, 1.67fr)
+        minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(150px, 1.67fr);
     width: 100%;
     height: 30px;
     align-items: center;
@@ -14,13 +10,9 @@
 
 .auction .table-header-rows {
     display: grid;
-    grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
-            1.67fr
-        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
-            1.67fr
-        );
+    grid-template-columns:
+        minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(150px, 1.67fr)
+        minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(150px, 1.67fr);
     width: 100%;
     border-bottom: 1px solid #fff;
     margin-bottom: 10px;
@@ -31,13 +23,10 @@
     grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
             150px,
             1.67fr
-        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
+        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(130px, 1.67fr) minmax(
+            135px,
             1.67fr
-        ) minmax(
-            150px,
-            1.67fr
-        );;
+        ) minmax(83px, 1fr);
     width: 100%;
     height: 30px;
     align-items: center;
@@ -48,15 +37,55 @@
     grid-template-columns: minmax(50px, 1fr) minmax(150px, 1.67fr) minmax(
             150px,
             1.67fr
-        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(150px, 1.67fr) minmax(
-            150px,
+        ) minmax(150px, 3.67fr) minmax(130px, 1fr) minmax(130px, 1.67fr) minmax(
+            135px,
             1.67fr
-        ) minmax(
-            150px,
-            1.67fr
-        );;
+        ) minmax(83px, 1fr);
     width: 100%;
     border-bottom: 1px solid #fff;
     margin-bottom: 10px;
 }
 
+.container-dinamics {
+    position: relative;
+    margin-bottom: 35px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.statistics-plot {
+    position: absolute;
+    top: 15%;
+    left: 7%;
+    z-index: 1;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    justify-content: center;
+    font-size: 13px;
+}
+.statistics-plot span {
+    color: #36d6ae;
+}
+
+.bnt-claime {
+    border: none;
+    outline: none;
+    background-color: #000;
+    color: #36d6ae;
+    box-shadow: 0 0 3px #3ab793;
+    border-radius: 2px;
+    padding: 3px 5px;
+    font-size: 14px;
+}
+
+.bnt-claime:hover {
+    box-shadow: 0 0 7px #3ab793;
+}
+
+.bnt-claime:active {
+    background-color: #36d6ae;
+    color: #fff;
+}

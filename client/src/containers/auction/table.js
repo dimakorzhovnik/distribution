@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { ClaimedRound } from './claimed';
+import { ClaimedAll } from './claimedAll';
 
 export class Table extends Component {
   render() {
@@ -36,7 +37,17 @@ export class Table extends Component {
           <div className="number">
             You {TOKEN_NAME}, G{TOKEN_NAME}
           </div>
-          {claimed && <div className="number" />}
+          {claimed && (
+            <div className="number">
+              <ClaimedAll
+                contract={contract}
+                web3={web3}
+                className="bnt-claime"
+              >
+                ClaimedAll
+              </ClaimedAll>
+            </div>
+          )}
         </div>
         <div className="table-body">{tableRow}</div>
       </div>

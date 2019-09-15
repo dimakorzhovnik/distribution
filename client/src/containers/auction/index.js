@@ -68,10 +68,9 @@ class Auction extends PureComponent {
       roundThis: '',
       timeLeft: 0,
       currentPrice: 0,
+      dailyTotals: 0,
       raised: 0,
       loading: true,
-      loadingPlot: false,
-      loadingTable: false,
       numberOfDays: 0,
       claimed: false,
       dynamics: {
@@ -144,7 +143,8 @@ class Auction extends PureComponent {
     return this.setState({
       roundThis,
       currentPrice,
-      numberOfDays
+      numberOfDays,
+      dailyTotals: Math.floor((dailyTotals / Math.pow(10, 18)) * 10000) / 10000
     });
   };
 
@@ -305,7 +305,7 @@ class Auction extends PureComponent {
                 10000
               : Math.floor(((23 * item) / 24) * 10000) / 10000,
           youETH: _userBuys / Math.pow(10, 18),
-          youCYB: cyb,
+          youCYB: Math.floor(cyb * 100) / 100,
           claimed: claimedItem
           // _youCYB.length ? _youCYB[0].returnValues.amount : '0'
         });
@@ -313,7 +313,7 @@ class Auction extends PureComponent {
         // }
       }
     );
-    this.setState({ table});
+    this.setState({ table });
   };
 
   render() {
@@ -326,7 +326,8 @@ class Auction extends PureComponent {
       raised,
       dynamics,
       loading,
-      claimed
+      claimed,
+      dailyTotals
     } = this.state;
     const thc = 70 * Math.pow(10, 13);
 
@@ -347,7 +348,14 @@ class Auction extends PureComponent {
               <Loading />
             </div>
           )}
-          {!loading && <Dinamics data={dynamics} />}
+          {!loading && (
+            <Dinamics
+              data={dynamics}
+              price={currentPrice}
+              volume={dailyTotals}
+              round={roundThis}
+            />
+          )}
           {!loading && (
             <div style={{ marginTop: '0px', width: '100%' }}>
               <Table

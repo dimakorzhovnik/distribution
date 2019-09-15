@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class ClaimedRound extends Component {
+export class ClaimedAll extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -10,13 +10,13 @@ export class ClaimedRound extends Component {
   }
 
   claimedToken = account => {
-    const { web3, contract, day } = this.props;
+    const { web3, contract } = this.props;
     console.log(account);
     try {
       web3.eth.sendTransaction({
         from: account,
         to: this.smart,
-        data: contract.methods.claim(day).encodeABI()
+        data: contract.methods.claimAll().encodeABI()
       });
       this.setState({
         status: true
@@ -52,8 +52,8 @@ export class ClaimedRound extends Component {
 
   render() {
     return (
-      <button onClick={this.getAccount} className='bnt-claime' disabled={this.state.status}>
-        Claime
+      <button onClick={this.getAccount} className='bnt-claime'>
+        ClaimeAll
       </button>
     );
   }

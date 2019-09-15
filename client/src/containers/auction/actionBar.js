@@ -5,10 +5,10 @@ const StartState = ({ onClickBtn, valueSelect, onChangeSelect }) => (
     <div className="container-action-content">
       <div className="action-text">
         <span className="actionBar-text">Contribute ETH using</span>
-        <select value={valueSelect} onChange={onChangeSelect}>
+        {/* <select value={valueSelect} onChange={onChangeSelect}>
           <option value="address">Any ETH wallet</option>
           <option value="ledger">Ledger</option>
-        </select>
+        </select> */}
       </div>
       <button className="btn" onClick={onClickBtn}>
         Fuck Google
@@ -120,24 +120,24 @@ export class ActionBar extends Component {
     });
 
   onClickFuckGoogle = () => {
-    const { valueSelect } = this.state;
+    // const { valueSelect } = this.state;
 
-    switch (valueSelect) {
-      case 'address':
+    // switch (valueSelect) {
+    //   case 'address':
         this.setState({
           step: 'contributeETH'
         });
-        break;
-      case 'ledger':
-        this.setState({
-          step: 'contributeATOMs'
-        });
-        break;
-      default:
-        this.setState({
-          step: 'start'
-        });
-    }
+      //   break;
+      // case 'ledger':
+      //   this.setState({
+      //     step: 'contributeATOMs'
+      //   });
+      //   break;
+      // default:
+      //   this.setState({
+      //     step: 'start'
+      //   });
+    // }
   };
 
   onClickTrackContribution = () =>
