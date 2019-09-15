@@ -37,8 +37,20 @@ const ContributeATOMs = ({
             defaultValue={defaultValueRound}
             onChange={onChangeRound}
             placeholder={`сhoose round ${minValueRound} to ${maxValueRound}`}
+            style={{
+              width: '30%',
+              marginLeft: '10px'
+            }}
           />
-          <input value={valueAmount} onChange={onChangeAmount} />
+          <input
+            value={valueAmount}
+            onChange={onChangeAmount}
+            placeholder="ETH"
+            style={{
+              width: '30%',
+              marginLeft: '10px'
+            }}
+          />
         </span>
       </div>
       <button className="btn" onClick={onClickBtn}>
@@ -254,9 +266,9 @@ export class ActionBar extends Component {
         this.buyTOKEN(accounts[0]);
       }
     } else return console.log('Your metamask is locked!');
-    // this.setState({
-    //   step: 'transactionCost'
-    // });
+    this.setState({
+      step: 'succesfuuly'
+    });
   };
 
   onClickTransactionCost = () =>

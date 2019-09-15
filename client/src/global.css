@@ -121,3 +121,37 @@ a {
 .no-margin{
     margin: 0;
 }
+
+input {
+    font-size: 16px;
+    height: 30px;
+    background-color: #000;
+    border: none;
+    outline: none;
+    caret-color: #3ab793;
+    color: #3ab793;
+    box-shadow: 0 0 2px 0.3px #3ab793;
+    padding: 0 5px;
+    border-radius: 3px;
+}
+
+input:focus{
+    outline: none;
+}
+
+input:active{
+    outline: none;
+}
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #3ab793;
+    opacity: 1; /* Firefox */
+  }
+  
+  :-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #3ab793;
+  }
+  
+  ::-ms-input-placeholder { /* Microsoft Edge */
+    color: #3ab793;
+  }

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import waitForWeb3 from './waitForWeb3';
 import { abi } from '../../utils/abi';
 import AuctionUtils from '../../../../build/contracts/AuctionUtils.json';
+import { Loading } from '../index';
 
 const injectWeb3 = InnerComponent =>
   class extends PureComponent {
@@ -17,15 +18,14 @@ const injectWeb3 = InnerComponent =>
       this.getWeb3 = this.getWeb3.bind(this);
       this.smart = '0x6C9c39D896B51e6736DBd3dA710163903A3B091B';
       this.smartAuctionUtils = '0x303Fb6bA398F2039b3AE56AB472D80839463E7dF';
-
     }
 
     componentDidMount() {
-      window.ethereum.enable();
       this.getWeb3().then(() => this.setState({ loading: false }));
     }
 
     async getWeb3() {
+      await window.ethereum.enable();
       try {
         const web3 = await waitForWeb3();
         const contract = await new web3.eth.Contract(abi, this.smart);
@@ -55,7 +55,19 @@ const injectWeb3 = InnerComponent =>
         contractAuctionUtils
       } = this.state;
       if (loading) {
-        return <p>...</p>;
+        return (
+          <div
+            style={{
+              width: '100%',
+              height: '50vh',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Loading />
+          </div>
+        );
       }
 
       return (

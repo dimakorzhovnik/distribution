@@ -13,7 +13,7 @@ export const Statistics = ({
   <ContainerCard col="5">
     <Indicators title={`${round} of ${roundAll}`} value="Round" />
     <Indicators title={`${raised} ETH`} value="Raised" />
-    <Card title={`${currentPrice} ETH/${TOKEN_NAME}`} value="Current price" />
+    <Card title={`${currentPrice} ETH/G${TOKEN_NAME}`} value="Current price" />
     <Indicators title={`${timeLeft} hour`} value="Left in round" />
     <Indicators title={`${cap} ETH`} value={`${TOKEN_NAME} CAP`} />
   </ContainerCard>
