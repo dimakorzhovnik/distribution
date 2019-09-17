@@ -73,6 +73,7 @@ class Auction extends PureComponent {
       loading: true,
       numberOfDays: 0,
       claimed: false,
+      createOnDay: 0,
       dynamics: {
         x: [],
         y: [],
@@ -111,7 +112,6 @@ class Auction extends PureComponent {
     const today = parseInt(await methods.today().call());
     const time = await methods.time().call();
     const startTime = await methods.startTime().call();
-
     const times = parseFloat(
       today * 23 * 60 * 60 - (parseFloat(time) - parseFloat(startTime))
     );
@@ -153,6 +153,7 @@ class Auction extends PureComponent {
       contract: { methods },
       contractAuctionUtils
     } = this.props;
+    const { roundThis } = this.state;
     let raised = 0;
     const dynamics = {
       x: [],
@@ -169,6 +170,16 @@ class Auction extends PureComponent {
     const dailyTotalsUtils = await contractAuctionUtils.methods
       .dailyTotals()
       .call();
+
+      if (roundThis === 0) {
+        this.setState({
+          createOnDay: createFirstDay
+        });
+      } else {
+        this.setState({
+          createOnDay: createPerDay
+        });
+      }
     await asyncForEach(
       Array.from(Array(dailyTotalsUtils.length).keys()),
       async item => {
@@ -185,7 +196,7 @@ class Auction extends PureComponent {
         );
         // TODO
         // if (item <= today) {
-        const dt = await methods.dailyTotals(item).call();
+        const dt = dailyTotalsUtils[item];
         raised += parseFloat(dt) / Math.pow(10, 18);
 
         const _raised = parseFloat(dt) / Math.pow(10, 18);
@@ -254,14 +265,24 @@ class Auction extends PureComponent {
     const dailyTotalsUtils = await contractAuctionUtils.methods
       .dailyTotals()
       .call();
+
+
+    const _userBuys = await contractAuctionUtils.methods.userBuys(accounts).call();
+
     await asyncForEach(
       Array.from(Array(dailyTotalsUtils.length).keys()),
       async item => {
         let createOnDay;
         if (item === 0) {
           createOnDay = createFirstDay;
+          this.setState({
+            createOnDay
+          });
         } else {
           createOnDay = createPerDay;
+          this.setState({
+            createOnDay
+          });
         }
         // if (item <= roundThis) {
         const currentPrice = roundNumber(
@@ -269,17 +290,16 @@ class Auction extends PureComponent {
           6
         );
 
-        const _userBuys = await methods.userBuys(item, accounts).call();
 
         const distValue =
           Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100;
         const dailyValue =
           Math.floor((dailyTotalsUtils[item] / Math.pow(10, 18)) * 10000) /
           10000;
-        const userBuy = _userBuys / Math.pow(10, 18);
+        const userBuy = _userBuys[item] / Math.pow(10, 18);
         const _youCYB = youCYB.filter(i => +i.returnValues.window === +item);
         let cyb;
-        if (_userBuys === '0' || userClaims[item] === true) {
+        if (_userBuys[item] === '0' || userClaims[item] === true) {
           cyb = 0;
         } else {
           cyb = (distValue / dailyValue) * userBuy;
@@ -299,12 +319,8 @@ class Auction extends PureComponent {
             Math.floor((dailyTotalsUtils[item] / Math.pow(10, 18)) * 10000) /
             10000,
           price: currentPrice,
-          closing:
-            item === 0
-              ? Math.floor(((startTime - openTime) / 60 / 60 / 24) * 10000) /
-                10000
-              : Math.floor(((23 * item) / 24) * 10000) / 10000,
-          youETH: _userBuys / Math.pow(10, 18),
+          closing: (23 * (roundThis - item)) / 23,
+          youETH: _userBuys[item] / Math.pow(10, 18),
           youCYB: Math.floor(cyb * 100) / 100,
           claimed: claimedItem
           // _youCYB.length ? _youCYB[0].returnValues.amount : '0'
@@ -327,13 +343,15 @@ class Auction extends PureComponent {
       dynamics,
       loading,
       claimed,
-      dailyTotals
+      dailyTotals,
+      createOnDay
     } = this.state;
-    const thc = 70 * Math.pow(10, 13);
 
+    const thc = 70 * Math.pow(10, 3);
     return (
-      <span>
+      <div>
         <main className="block-body auction">
+          <span className="caption">Cyber~Auction</span>
           <Statistics
             round={roundThis}
             roundAll={numberOfDays}
@@ -354,6 +372,7 @@ class Auction extends PureComponent {
               price={currentPrice}
               volume={dailyTotals}
               round={roundThis}
+              distribution={Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100}
             />
           )}
           {!loading && (
@@ -364,6 +383,7 @@ class Auction extends PureComponent {
                 claimed={claimed}
                 web3={this.props.web3}
                 contract={this.props.contract}
+                round={roundThis}
               />
             </div>
           )}
@@ -374,7 +394,7 @@ class Auction extends PureComponent {
           minRound={roundThis}
           maxRound={numberOfDays}
         />
-      </span>
+      </div>
     );
   }
 }

@@ -13,11 +13,13 @@ export const Indicators = ({ title, value, tooltipValue, positionTooltip }) => (
   </Tooltip>
 );
 
-export const Card = ({ title, value }) => (
-  <div className='container-card'>
-    <span className='card-title'>{title}</span>
-    <span className='card-value'>{value}</span>
-  </div>
+export const Card = ({ title, value, tooltipValue, positionTooltip }) => (
+  <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
+    <div className='container-card'>
+      <span className='card-title'>{title}</span>
+      <span className='card-value'>{value}</span>
+    </div>
+  </Tooltip>
 );
 
 export const CardArrow = ({ title, value, win }) => (

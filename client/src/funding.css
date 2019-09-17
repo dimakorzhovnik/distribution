@@ -329,10 +329,6 @@ span.right-input{
         margin: 0 auto;
     }
 
-.actionBar-text {
-    font-size: 20px;
-}
-
 .btn {
     padding: 0 50px;
     height: 42px;
@@ -422,7 +418,13 @@ span.right-input{
 }
 
 .number {
-    text-align: end;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .number.address {
@@ -430,6 +432,26 @@ span.right-input{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.table-btn-col {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%
+}
+
+.table-index-col {
+    text-align: end;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%
+}
+
+
 
 select {
     width: 200px;
@@ -447,4 +469,6 @@ select {
 .tooltipContainer{
     box-shadow: 0 0 2px #38d6ae !important;
     padding: 10px !important;
+    max-width: 200px !important;
+    background-color: #000 !important;
 }

@@ -1,8 +1,17 @@
 import React, { PureComponent } from 'react';
 import waitForWeb3 from './waitForWeb3';
 import { abi } from '../../utils/abi';
+import Auction from '../../../../build/contracts/Auction.json';
 import AuctionUtils from '../../../../build/contracts/AuctionUtils.json';
 import { Loading } from '../index';
+import { NotFound } from '../../containers/application/notFound';
+
+const networksIds = {
+  42: 'kovan',
+  1: 'main',
+  5777: 'TestNet',
+  4: 'rinkeby'
+};
 
 const injectWeb3 = InnerComponent =>
   class extends PureComponent {
@@ -13,6 +22,8 @@ const injectWeb3 = InnerComponent =>
         contract: null,
         loading: true,
         accounts: null,
+        networkId: null,
+        isCorrectNetwork: true,
         contractAuctionUtils: null
       };
       this.getWeb3 = this.getWeb3.bind(this);
@@ -33,18 +44,34 @@ const injectWeb3 = InnerComponent =>
           AuctionUtils.abi,
           this.smartAuctionUtils
         );
-        // console.log(contract);
+        const networkContract = Object.keys(Auction.networks);
+        const networkId = await web3.eth.net.getId();
         const accounts = await web3.eth.getAccounts();
         this.setState({
           web3,
           contract,
           contractAuctionUtils,
-          accounts: accounts[0]
+          accounts: accounts[0],
+          networkId,
+          isCorrectNetwork: networkContract.indexOf(`${networkId}`) !== -1
         });
       } catch (e) {
         this.setState({ loading: false });
       }
     }
+
+    // checkNetwork = () =>
+    //   new Promise(resolve => {
+    //     this.getWeb3.then(({ web3 }) => {
+    //       web3.version.getNetwork((err, netId) => {
+    //         console.log(netId);
+
+    //         resolve({
+    //           networkId: netId
+    //         });
+    //       });
+    //     });
+    //   });
 
     render() {
       const {
@@ -52,8 +79,15 @@ const injectWeb3 = InnerComponent =>
         contract,
         loading,
         accounts,
-        contractAuctionUtils
+        contractAuctionUtils,
+        isCorrectNetwork
       } = this.state;
+
+      if (!isCorrectNetwork) {
+        return (
+          <NotFound text="Please connect to the Ethereum Rinkeby Network" />
+        );
+      }
       if (loading) {
         return (
           <div

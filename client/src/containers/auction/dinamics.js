@@ -16,16 +16,18 @@ export class Dinamics extends Component {
     this.state = {
       price: '',
       volume: '',
-      round: ''
+      round: '',
+      distribution: ''
     };
   }
 
   componentDidMount() {
-    const { round, price, volume } = this.props;
+    const { round, price, volume, distribution } = this.props;
     this.setState({
       price,
       round,
-      volume
+      volume,
+      distribution
     });
   }
 
@@ -38,11 +40,12 @@ export class Dinamics extends Component {
   };
 
   plotUnhover = () => {
-    const { round, price, volume } = this.props;
+    const { round, price, volume, distribution } = this.props;
     this.setState({
       price,
       round,
-      volume
+      volume,
+      distribution
     });
   };
 
@@ -50,7 +53,7 @@ export class Dinamics extends Component {
     const { x } = this.props.data;
     const { y } = this.props.data;
     const { x1 } = this.props.data;
-    const { price, volume, round } = this.state;
+    const { price, volume, round, distribution } = this.state;
 
     /* let x; */
     const _yaxis = y.max() / 0.3;
@@ -121,7 +124,7 @@ export class Dinamics extends Component {
 
         tickfont: {
           color: '#fff',
-          size: 9
+          size: 12
         }
       },
       yaxis2: {
@@ -160,7 +163,7 @@ export class Dinamics extends Component {
         titlefont: { color: '#fff' },
         tickfont: {
           color: '#fff',
-          size: 9
+          size: 12
         }
       }
 
@@ -179,13 +182,16 @@ export class Dinamics extends Component {
       <div className="container-dinamics">
         <div className="statistics-plot">
           <div>
-            prise: <span>{price}</span>
+            price: <span>{price} ETH/GGOL</span>
           </div>
           <div style={{ margin: '0 5px' }}>
             round: <span>{round}</span>
           </div>
           <div>
-            volume: <span>{volume}</span>
+            volume: <span>{volume} ETH</span>
+          </div>
+          <div style={{ margin: '0 5px' }}>
+            round distribution: <span>{distribution} GGOL</span>
           </div>
         </div>
         <Plotly

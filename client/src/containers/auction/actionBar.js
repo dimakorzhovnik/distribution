@@ -1,10 +1,70 @@
 import React, { Component } from 'react';
 
+function lament(error) {
+  if (error) {
+    document.querySelector('.before-error').outerHTML += `
+      <div class="error pane">
+        <h3>${error.message}</h3>
+        <pre>${error.stack}</pre>
+      </div>
+    `;
+  }
+}
+
+const hopefully = $ => (error, result) => {
+  if (error) {
+    lament(error);
+  } else {
+    $(result);
+  }
+};
+
+const ping = tx =>
+  new Promise((resolve, reject) => {
+    loop();
+    function loop() {
+      window.web3.eth.getTransactionReceipt(tx, async (error, receipt) => {
+        if (receipt == null) {
+          resolve(receipt);
+        } else {
+          setTimeout(loop, 1000);
+        }
+
+        if (receipt) {
+          resolve(receipt);
+        } else {
+          setTimeout(loop, 1000);
+        }
+      });
+    }
+  });
+
+const Input = ({
+  value,
+  onChange,
+  placeholder,
+  valid,
+  messageError,
+  ...props
+}) => (
+  <div {...props} className="input-box-valid">
+    <input
+      style={{ textAlign: 'end' }}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+    />
+    {valid && <span className="errorMessage">{messageError}</span>}
+  </div>
+);
+
 const StartState = ({ onClickBtn, valueSelect, onChangeSelect }) => (
   <div className="container-action">
     <div className="container-action-content">
       <div className="action-text">
-        <span className="actionBar-text">Contribute ETH using</span>
+        <span className="actionBar-text">
+          Contribute ETH using MetaMask, push button
+        </span>
         {/* <select value={valueSelect} onChange={onChangeSelect}>
           <option value="address">Any ETH wallet</option>
           <option value="ledger">Ledger</option>
@@ -17,73 +77,83 @@ const StartState = ({ onClickBtn, valueSelect, onChangeSelect }) => (
   </div>
 );
 
-const ContributeATOMs = ({
+const ContributeETH = ({
   onClickBtn,
   valueRound,
   valueAmount,
   onChangeAmount,
   onChangeRound,
-  defaultValueRound,
-  minValueRound,
-  maxValueRound
+  disabledBtnConfirm,
+  validRound,
+  validAmount,
+  messageRound,
+  messageAmount
 }) => (
   <div className="container-action">
     <div className="container-action-content">
       <div className="action-text">
-        <span className="actionBar-text">
-          I want contribute
-          <input
-            value={valueRound}
-            defaultValue={defaultValueRound}
-            onChange={onChangeRound}
-            placeholder={`сhoose round ${minValueRound} to ${maxValueRound}`}
-            style={{
-              width: '30%',
-              marginLeft: '10px'
-            }}
-          />
-          <input
+        <div className="actionBar-text">
+          I want to contribute
+          <Input
             value={valueAmount}
             onChange={onChangeAmount}
-            placeholder="ETH"
+            // placeholder={`сhoose round ${minValueRound} to ${maxValueRound}`}
+            valid={validAmount}
+            messageError={messageAmount}
             style={{
-              width: '30%',
-              marginLeft: '10px'
+              width: '15%',
+              margin: '0 5px 0 15px'
             }}
           />
-        </span>
+          <span>ETH in</span>
+          <Input
+            value={valueRound}
+            onChange={onChangeRound}
+            // placeholder={`сhoose round ${minValueRound} to ${maxValueRound}`}
+            valid={validRound}
+            messageError={messageRound}
+            style={{
+              width: '10%',
+              margin: '0 10px 0 15px'
+            }}
+          />
+          <span>round</span>
+        </div>
       </div>
-      <button className="btn" onClick={onClickBtn}>
+      <button
+        className="btn"
+        disabled={disabledBtnConfirm}
+        onClick={onClickBtn}
+      >
         Confirm
       </button>
     </div>
   </div>
 );
 
-const TransactionCost = ({ onClickBtn }) => (
+const Succesfuuly = ({ onClickBtn, hash }) => (
   <div className="container-action">
     <div className="container-action-content">
       <div className="action-text">
-        <span className="actionBar-text">Transaction cost is 0.1 uATOM</span>
+        <div className="actionBar-text flex-column ">
+          <div className="text-default">
+            Your TX has been broadcast to the network. It is waiting to be mined
+            & confirned.
+          </div>
+          <div className="text-default">
+              Check TX status:{' '}
+            <a
+              className="hash"
+              href={`https://rinkeby.etherscan.io/tx/${hash}`}
+            >
+              0x54ecdad68b55d3e15452cd801287434194d329e0725ee1f2cc230fb0d9dd4221
+            </a>
+          </div>
+        </div>
       </div>
       <button className="btn" onClick={onClickBtn}>
-        Sign
+        OK
       </button>
-    </div>
-  </div>
-);
-
-const Succesfuuly = ({ onClickBtn }) => (
-  <div className="container-action">
-    <div className="container-action-content">
-      <div className="action-text">
-        <span className="actionBar-text">
-          Tx <a>id</a> succesfuuly confirmed
-        </span>
-      </div>
-      {/* <button className="btn" onClick={onClickBtn}>
-                Confirm
-            </button> */}
     </div>
   </div>
 );
@@ -96,23 +166,36 @@ export class ActionBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      valueSelect: 'address',
       step: 'start',
       round: '',
-      amount: ''
+      amount: '',
+      tx: null,
+      messageRound: '',
+      messageAmount: '',
+      validInputRound: false,
+      validInputAmount: false
     };
     this.smart = '0x6C9c39D896B51e6736DBd3dA710163903A3B091B';
   }
 
-  onChangeSelect = e =>
-    this.setState({
-      valueSelect: e.target.value
-    });
+  onChangeRound = e => {
+    const { minRound, maxRound } = this.props;
 
-  onChangeRound = e =>
+    if (e.target.value < minRound || e.target.value > maxRound - 1) {
+      this.setState({
+        validInputRound: true,
+        messageRound: `enter round ${minRound} to ${maxRound}`
+      });
+    } else {
+      this.setState({
+        validInputRound: false,
+        messageRound: ''
+      });
+    }
     this.setState({
       round: e.target.value
     });
+  };
 
   onChangeAmount = e =>
     this.setState({
@@ -120,24 +203,11 @@ export class ActionBar extends Component {
     });
 
   onClickFuckGoogle = () => {
-    // const { valueSelect } = this.state;
-
-    // switch (valueSelect) {
-    //   case 'address':
-        this.setState({
-          step: 'contributeETH'
-        });
-      //   break;
-      // case 'ledger':
-      //   this.setState({
-      //     step: 'contributeATOMs'
-      //   });
-      //   break;
-      // default:
-      //   this.setState({
-      //     step: 'start'
-      //   });
-    // }
+    const { minRound } = this.props;
+    this.setState({
+      step: 'contributeETH',
+      round: minRound
+    });
   };
 
   onClickTrackContribution = () =>
@@ -147,100 +217,34 @@ export class ActionBar extends Component {
 
   onClickSaveAddress = () =>
     this.setState({
-      step: 'start'
+      step: 'start',
+      round: '',
+      amount: ''
     });
-
-//   сhekStatus = txhash => {
-//     const { web3 } = this.props;
-//     let interval;
-//     let startBlock;
-//     let savedTxInfo;
-//     const stateEnum = {
-//       start: 1,
-//       mined: 2,
-//       awaited: 3,
-//       confirmed: 4,
-//       unconfirmed: 5
-//     };
-//     let pollState = stateEnum.start;
-//     const poll = () => {
-//       if (pollState === stateEnum.start) {
-//         web3.eth.getTransaction(txhash, (e, txInfo) => {
-//           if (e || txInfo == null) {
-//             return; // XXX silently drop errors
-//           }
-//           if (txInfo.blockHash != null) {
-//             startBlock = txInfo.blockNumber;
-//             savedTxInfo = txInfo;
-//             console.log('mined');
-//             pollState = stateEnum.mined;
-//           }
-//         });
-//       } else if (pollState == stateEnum.mined) {
-//         web3.eth.getBlockNumber((e, blockNum) => {
-//           if (e) {
-//             return; // XXX silently drop errors
-//           }
-//           console.log('blockNum: ', blockNum);
-//           if (blockNum >= blockCount + startBlock) {
-//             pollState = stateEnum.awaited;
-//           }
-//         });
-//       } else if (pollState == stateEnum.awaited) {
-//         web3.eth.getTransactionReceipt(txhash, (e, receipt) => {
-//           if (e || receipt == null) {
-//             return; // XXX silently drop errors.  TBD callback error?
-//           }
-//           // confirm we didn't run out of gas
-//           // XXX this is where we should be checking a plurality of nodes.  TBD
-//           clearInterval(interval);
-//           if (receipt.gasUsed >= savedTxInfo.gas) {
-//             pollState = stateEnum.unconfirmed;
-//             callback(new Error('we ran out of gas, not confirmed!'), null);
-//           } else {
-//             pollState = stateEnum.confirmed;
-//             callback(null, receipt);
-//           }
-//         });
-//       } else {
-//         throw new Error(
-//           `We should never get here, illegal state: ${pollState}`
-//         );
-//       }
-
-//       // note assuming poll interval is 1 second
-//       attempts++;
-//       if (attempts > timeout) {
-//         clearInterval(interval);
-//         pollState = stateEnum.unconfirmed;
-//         callback(new Error('Timed out, not confirmed'), null);
-//       }
-//     };
-
-//     interval = setInterval(poll, 1000);
-//     poll();
-//   };
 
   buyTOKEN = account => {
     const { web3, contract } = this.props;
     const { round, amount } = this.state;
-    // const contr = contract.methods.userBuys().encodeABI();
     console.log(round);
     console.log(amount);
 
     const priceInWei = web3.utils.toWei(amount, 'ether');
-    web3.eth
-      .sendTransaction({
+    web3.eth.sendTransaction(
+      {
         from: account,
         to: this.smart,
         value: priceInWei,
         data: contract.methods.buyWithLimit(round, 0).encodeABI()
-      })
-      .on('transactionHash', hash => {
-        // console.log('transactionHash', hash);
-        web3.eth.getTransaction(hash).then(console.log);
-      })
-      .on('error', console.error);
+      },
+      hopefully(result =>
+        ping(result).then(() => {
+          this.setState({
+            step: 'succesfuuly',
+            tx: result
+          });
+        })
+      )
+    );
   };
 
   onClickContributeATOMs = async () => {
@@ -266,9 +270,6 @@ export class ActionBar extends Component {
         this.buyTOKEN(accounts[0]);
       }
     } else return console.log('Your metamask is locked!');
-    this.setState({
-      step: 'succesfuuly'
-    });
   };
 
   onClickTransactionCost = () =>
@@ -277,39 +278,44 @@ export class ActionBar extends Component {
     });
 
   render() {
-    const { valueSelect, step, round, amount } = this.state;
-    const { web3, minRound, maxRound } = this.props;
+    const {
+      step,
+      round,
+      amount,
+      tx,
+      messageRound,
+      messageAmount,
+      validInputRound,
+      validInputAmount
+    } = this.state;
+    const { minRound, maxRound } = this.props;
+    const btnConfirm = round >= minRound && round <= maxRound - 1 && amount > 0;
 
     if (step === 'start') {
-      return (
-        <StartState
-          onClickBtn={this.onClickFuckGoogle}
-          valueSelect={valueSelect}
-          onChangeSelect={this.onChangeSelect}
-        />
-      );
+      return <StartState onClickBtn={this.onClickFuckGoogle} />;
     }
 
     if (step === 'contributeETH') {
       return (
-        <ContributeATOMs
+        <ContributeETH
           valueRound={round}
           valueAmount={amount}
+          validRound={validInputRound}
+          validAmount={validInputAmount}
+          messageRound={messageRound}
+          messageAmount={messageAmount}
           onChangeAmount={this.onChangeAmount}
           onChangeRound={this.onChangeRound}
           minValueRound={minRound}
-          maxValueRound={maxRound}
+          maxValueRound={maxRound - 1}
           onClickBtn={this.onClickContributeATOMs}
+          disabledBtnConfirm={!btnConfirm}
         />
       );
     }
 
-    if (step === 'transactionCost') {
-      return <TransactionCost onClickBtn={this.onClickTransactionCost} />;
-    }
-
     if (step === 'succesfuuly') {
-      return <Succesfuuly />;
+      return <Succesfuuly hash={tx} onClickBtn={this.onClickSaveAddress} />;
     }
 
     return null;
