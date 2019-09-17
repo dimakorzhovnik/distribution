@@ -380,7 +380,7 @@ class Auction extends PureComponent {
               <Table
                 data={table}
                 TOKEN_NAME={TOKEN_NAME}
-                claimed={claimed}
+                // claimed={claimed}
                 web3={this.props.web3}
                 contract={this.props.contract}
                 round={roundThis}

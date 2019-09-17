@@ -23,13 +23,13 @@ export class Table extends Component {
         </div>
         <div className="number">{item.youETH}</div>
         <div className="number">{item.youCYB}</div>
-        {item.claimed && (
+        {/* {item.claimed && (
           <div className="table-btn-col">
             <ClaimedRound day={item.claimed} contract={contract} web3={web3}>
               Claim
             </ClaimedRound>
           </div>
-        )}
+        )} */}
       </div>
     ));
     return (
