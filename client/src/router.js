@@ -5,19 +5,20 @@ import App from './containers/application/application';
 import Got from './containers/got/got';
 import Funding from './containers/funding/index';
 import Auction from './containers/auction/index';
+import NotFound from './containers/application/notFound';
 
 export const history = createHashHistory({});
 
 const AppRouter = () => (
   <Router history={history}>
-    {/* <Route path="/" component={App} />
-    <Route path="/got" component={Got} />
-  */}
-    <Route path="/" component={Funding} />
-    {/* <Route path="/" component={Auction} /> */}
+    {/* <Route path="/" component={App} /> */}
+    <Route path="/" component={Got} />
+ 
+    {/* <Route path="/funding" component={Funding} /> */}
+    {/* <Route path="/auction" component={Auction} /> */}
 
-    {/* <Route path='*' exact component={ NotFound } />
-        <IndexRoute component={ Home } /> */}
+    {/* <Route path='*' exact component={ NotFound } /> */}
+        {/* <IndexRoute component={ Home } /> */}
   </Router>
 );
 

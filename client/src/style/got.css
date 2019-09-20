@@ -291,7 +291,7 @@
     position: absolute;
     width: 60px;
     height: 60px;
-    content: url('./image/Ethereum_logo_2014.svg');
+    content: url('./../image/Ethereum_logo_2014.svg');
     left: 0px;
     bottom: 17px;
 }
@@ -299,7 +299,7 @@
     position: absolute;
     width: 60px;
     height: 60px;
-    content: url('./image/cosmos-2.svg');
+    content: url('./../image/cosmos-2.svg');
     right: 0px;
     bottom: 17px;
 }
@@ -313,7 +313,7 @@
     transform-origin: bottom center;
 }
 .seesaw-bottom:after {
-    content: url('./image/Bitcoin.svg');
+    content: url('./../image/Bitcoin.svg');
     position: absolute;
     bottom: 0;
     left: -40%;
@@ -369,7 +369,7 @@
     width: 10rem;
     height: calc(10rem / 1.1);
     overflow: hidden;
-    content: url('./image/303278.svg');
+    content: url('./../image/303278.svg');
     z-index: 1;
 }
 
@@ -381,66 +381,9 @@
     width: 10rem;
     height: calc(10rem / 1.1);
     overflow: hidden;
-    content: url('./image/303278.svg');
+    content: url('./../image/303278.svg');
     z-index: 1;
 }
-
-/* .point {
-    position: absolute;
-    background-color: #ffe134;
-    transform: translate(-50%, 50%) rotate(45deg) skew(30deg, 30deg);
-}
-.point:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: calc(10rem / 5);
-    height: calc(10rem / 5);
-    border-radius: calc(10rem / 5);
-    background-color: gold;
-    transform: translate(-50%, -50%) skew(-30deg, -30deg);
-}
-
-.point:first-child,
-.point:last-child {
-    top: calc(10rem / 2);
-    width: 10rem;
-    height: 10rem;
-}
-
-.point:nth-child(2),
-.point:nth-child(4) {
-    top: calc(10rem / 3);
-    width: 10rem;
-    height: 10rem;
-}
-
-.point:nth-child(3) {
-    top: calc(10rem / 4);
-    width: 10rem;
-    height: 10rem;
-}
-
-.point:first-child {
-    left: 0;
-}
-
-.point:nth-child(2) {
-    left: 25%;
-}
-
-.point:nth-child(3) {
-    left: 50%;
-}
-
-.point:nth-child(4) {
-    left: 75%;
-}
-
-.point:last-child {
-    left: 100%;
-} */
 
 .container-card-text {
     display: flex;

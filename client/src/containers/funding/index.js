@@ -3,7 +3,7 @@ import { Dinamics } from './dinamics';
 import { Statistics } from './statistics';
 import { Table } from './table';
 import { ActionBar } from './actionBar';
-import { asyncForEach, formatNumber } from '../../utils/utils';
+import { asyncForEach, formatNumber, run } from '../../utils/utils';
 
 const url =
   'https://herzner1.cybernode.ai/cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8';
@@ -17,14 +17,6 @@ const url =
 
 // const getInfoBlock = (methods, methodsArray) =>
 //   Promise.all(methods.map(methodName => methodsArray[methodName]().call()));
-
-const run = async func => {
-  try {
-    await func();
-  } catch (error) {
-    setTimeout(run, 1000, func);
-  }
-};
 
 class Funding extends PureComponent {
   constructor(props) {

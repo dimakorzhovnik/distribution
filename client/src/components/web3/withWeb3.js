@@ -4,7 +4,7 @@ import { abi } from '../../utils/abi';
 import Auction from '../../../../build/contracts/Auction.json';
 import AuctionUtils from '../../../../build/contracts/AuctionUtils.json';
 import { Loading } from '../index';
-import { NotFound } from '../../containers/application/notFound';
+import NotFound from '../../containers/application/notFound';
 
 const networksIds = {
   42: 'kovan',
