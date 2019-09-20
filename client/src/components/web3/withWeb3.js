@@ -23,6 +23,7 @@ const injectWeb3 = InnerComponent =>
         loading: true,
         accounts: null,
         networkId: null,
+        buyTransactionSuccess: false,
         isCorrectNetwork: true,
         contractAuctionUtils: null
       };
@@ -33,6 +34,7 @@ const injectWeb3 = InnerComponent =>
 
     componentDidMount() {
       this.getWeb3().then(() => this.setState({ loading: false }));
+      // this.checkBuy();
     }
 
     async getWeb3() {
@@ -59,19 +61,8 @@ const injectWeb3 = InnerComponent =>
         this.setState({ loading: false });
       }
     }
+    
 
-    // checkNetwork = () =>
-    //   new Promise(resolve => {
-    //     this.getWeb3.then(({ web3 }) => {
-    //       web3.version.getNetwork((err, netId) => {
-    //         console.log(netId);
-
-    //         resolve({
-    //           networkId: netId
-    //         });
-    //       });
-    //     });
-    //   });
 
     render() {
       const {
@@ -80,9 +71,10 @@ const injectWeb3 = InnerComponent =>
         loading,
         accounts,
         contractAuctionUtils,
-        isCorrectNetwork
+        isCorrectNetwork,
+        buyTransactionSuccess
       } = this.state;
-
+      
       if (!isCorrectNetwork) {
         return (
           <NotFound text="Please connect to the Ethereum Rinkeby Network" />
@@ -110,6 +102,7 @@ const injectWeb3 = InnerComponent =>
           contract={contract}
           accounts={accounts}
           contractAuctionUtils={contractAuctionUtils}
+          buyTransactionSuccess={buyTransactionSuccess}
           {...this.props}
         />
       );

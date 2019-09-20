@@ -4,52 +4,59 @@ import { Statistics } from './statistics';
 import { ActionBar } from './actionBar';
 import { Dinamics } from './dinamics';
 import { Table } from './table';
-import { Loading } from '../../components/index';
+import { Loading, Popup } from '../../components/index';
+import {
+  run,
+  formatNumber,
+  roundNumber,
+  asyncForEach,
+  timer
+} from '../../utils/utils';
 
 const TOKEN_NAME = 'GOL';
 
-const formatNumber = (number, toFixed) => {
-  let formatted = +number;
+// const formatNumber = (number, toFixed) => {
+//   let formatted = +number;
 
-  if (toFixed) {
-    formatted = +formatted.toFixed(toFixed);
-  }
+//   if (toFixed) {
+//     formatted = +formatted.toFixed(toFixed);
+//   }
 
-  return formatted.toLocaleString('en').replace(/,/g, ' ');
-};
+//   return formatted.toLocaleString('en').replace(/,/g, ' ');
+// };
 
-const run = async func => {
-  try {
-    await func();
-  } catch (error) {
-    setTimeout(run, 1000, func);
-  }
-};
+// const run = async func => {
+//   try {
+//     await func();
+//   } catch (error) {
+//     setTimeout(run, 1000, func);
+//   }
+// };
 
-const timer = func => {
-  setInterval(func, 1000);
-};
+// const timer = func => {
+//   setInterval(func, 1000);
+// };
 
-const asyncForEach = async (array, callback) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array);
-  }
-};
+// const asyncForEach = async (array, callback) => {
+//   for (let index = 0; index < array.length; index++) {
+//     await callback(array[index], index, array);
+//   }
+// };
 
-const roundNumber = (num, scale) => {
-  if (!`${num}`.includes('e')) {
-    return +`${Math.round(`${num}e+${scale}`)}e-${scale}`;
-  }
-  const arr = `${num}`.split('e');
-  let sig = '';
-  if (+arr[1] + scale > 0) {
-    sig = '+';
-  }
-  const i = `${+arr[0]}e${sig}${+arr[1] + scale}`;
-  const j = Math.round(i);
-  const k = +`${j}e-${scale}`;
-  return k;
-};
+// const roundNumber = (num, scale) => {
+//   if (!`${num}`.includes('e')) {
+//     return +`${Math.round(`${num}e+${scale}`)}e-${scale}`;
+//   }
+//   const arr = `${num}`.split('e');
+//   let sig = '';
+//   if (+arr[1] + scale > 0) {
+//     sig = '+';
+//   }
+//   const i = `${+arr[0]}e${sig}${+arr[1] + scale}`;
+//   const j = Math.round(i);
+//   const k = +`${j}e-${scale}`;
+//   return k;
+// };
 
 Date.prototype.toShortFormat = function() {
   const day = this.getDate();
@@ -74,6 +81,7 @@ class Auction extends PureComponent {
       numberOfDays: 0,
       claimed: false,
       createOnDay: 0,
+      popupsBuy: false,
       dynamics: {
         x: [],
         y: [],
@@ -84,15 +92,71 @@ class Auction extends PureComponent {
   }
 
   async componentDidMount() {
-    run(this.statistics);
-    run(this.dinamics);
-    run(this.getDataTable);
-    // timer(this.endRound);
-    timer(this.getTimeEndRound);
     const {
       contract: { methods },
-      accounts
+      accounts,
+      web3
     } = this.props;
+
+
+    // timer(this.endRound);
+    timer(this.getTimeEndRound);
+    // this.setState({
+    //   popupsBuy : buyTransactionSuccess,
+    // })
+      run(this.statistics);
+      run(this.dinamics);
+      run(this.getDataTable);
+
+    const subscription = web3.eth.subscribe(
+      'logs',
+      {
+        address: '0x6c9c39d896b51e6736dbd3da710163903a3b091b',
+        topics: [
+          '0xe054057d0479c6218d6ec87be73f88230a7e4e1f064cee6e7504e2c4cd9d6150'
+        ]
+      },
+      (error, result) => {
+        if (!error) console.log(result);
+        if (
+          result.data.indexOf(
+            accounts[0].toLowerCase().substr(2, accounts[0].length)
+          ) !== -1
+        ) {
+          window.location.reload();
+        }
+      }
+    );
+
+    // unsubscribes the subscription
+    subscription.unsubscribe((error, success) => {
+      if (success) console.log('Successfully unsubscribed!');
+    });
+
+    const subscriptionClaim = web3.eth.subscribe(
+      'logs',
+      {
+        address: '0x6c9c39d896b51e6736dbd3da710163903a3b091b',
+        topics: [
+          '0x51223fdc0a25891366fb358b4af9fe3c381b1566e287c61a29d01c8a173fe4f4'
+        ]
+      },
+      (error, result) => {
+        if (!error) console.log(result);
+        if (
+          result.data.indexOf(
+            accounts[0].toLowerCase().substr(2, accounts[0].length)
+          ) !== -1
+        ) {
+          window.location.reload();
+        }
+      }
+    );
+
+    // unsubscribes the subscription
+    subscriptionClaim.unsubscribe((error, success) => {
+      if (success) console.log('Successfully unsubscribed!');
+    });
 
     const { contract } = this.props;
     const youCYB = (await contract.getPastEvents('LogClaim', {
@@ -171,15 +235,15 @@ class Auction extends PureComponent {
       .dailyTotals()
       .call();
 
-      if (roundThis === 0) {
-        this.setState({
-          createOnDay: createFirstDay
-        });
-      } else {
-        this.setState({
-          createOnDay: createPerDay
-        });
-      }
+    if (roundThis === 0) {
+      this.setState({
+        createOnDay: createFirstDay
+      });
+    } else {
+      this.setState({
+        createOnDay: createPerDay
+      });
+    }
     await asyncForEach(
       Array.from(Array(dailyTotalsUtils.length).keys()),
       async item => {
@@ -249,9 +313,9 @@ class Auction extends PureComponent {
       toBlock: 'latest'
     })).filter(i => i.returnValues.user === accounts);
 
-    console.log({
-      youCYB
-    });
+    // console.log({
+    //   youCYB
+    // });
 
     const table = [];
     const roundThis = parseInt(await methods.today().call());
@@ -266,8 +330,9 @@ class Auction extends PureComponent {
       .dailyTotals()
       .call();
 
-
-    const _userBuys = await contractAuctionUtils.methods.userBuys(accounts).call();
+    const _userBuys = await contractAuctionUtils.methods
+      .userBuys(accounts)
+      .call();
 
     await asyncForEach(
       Array.from(Array(dailyTotalsUtils.length).keys()),
@@ -289,7 +354,6 @@ class Auction extends PureComponent {
           dailyTotalsUtils[item] / (createOnDay * Math.pow(10, 9)),
           6
         );
-
 
         const distValue =
           Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100;
@@ -344,10 +408,11 @@ class Auction extends PureComponent {
       loading,
       claimed,
       dailyTotals,
-      createOnDay
+      createOnDay,
+      popupsBuy
     } = this.state;
 
-    const thc = 70 * Math.pow(10, 3);
+    const thc = 700 * Math.pow(10, 3);
     return (
       <div>
         <main className="block-body auction">
@@ -372,7 +437,9 @@ class Auction extends PureComponent {
               price={currentPrice}
               volume={dailyTotals}
               round={roundThis}
-              distribution={Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100}
+              distribution={
+                Math.floor((createOnDay / Math.pow(10, 9)) * 100) / 100
+              }
             />
           )}
           {!loading && (
@@ -380,7 +447,7 @@ class Auction extends PureComponent {
               <Table
                 data={table}
                 TOKEN_NAME={TOKEN_NAME}
-                // claimed={claimed}
+                claimed={claimed}
                 web3={this.props.web3}
                 contract={this.props.contract}
                 round={roundThis}
