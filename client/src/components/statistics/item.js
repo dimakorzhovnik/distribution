@@ -6,8 +6,8 @@ export const ContainerCard = ({ children, col }) => <div style={{gridTemplateCol
 export const Indicators = ({ title, value, tooltipValue, positionTooltip }) => (
   <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
     <div className="contaiter-indicator">
-      <span className="indicator-title">{title}</span>
-      <span className="indicator-value">{value}</span>
+      <span className="indicator-title">{value}</span>
+      <span className="indicator-value">{title}</span>
       {/* <div className='dots' /> */}
     </div>
   </Tooltip>
@@ -16,8 +16,8 @@ export const Indicators = ({ title, value, tooltipValue, positionTooltip }) => (
 export const Card = ({ title, value, tooltipValue, positionTooltip }) => (
   <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
     <div className='container-card'>
-      <span className='card-title'>{title}</span>
-      <span className='card-value'>{value}</span>
+      <span className='card-title'>{value}</span>
+      <span className='card-value'>{title}</span>
     </div>
   </Tooltip>
 );
@@ -25,9 +25,9 @@ export const Card = ({ title, value, tooltipValue, positionTooltip }) => (
 export const CardArrow = ({ title, value, win }) => (
   <div className='container-card-arrow'>
     <div className={`card-title ${win === 'eth' ? 'eth' : 'atom'}`}>
-      {title}
+      {value}
       <div className={`card-arrow ${win === 'eth' ? 'card-arrow-transfonm-eth' : 'card-arrow-transfonm-atom'}`} />
     </div>
-    <div className='card-value'>{value}</div>
+    <div className='card-value'>{title}</div>
   </div>
 );

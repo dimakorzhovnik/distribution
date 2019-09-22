@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
 import { Indicators, Card, ContainerCard, CardArrow } from './item';
 
-export class Statistics extends Component {
-  render() {
-    const { ATOMsRaised, ETHRaised } = this.props;
-    return (
-      <ContainerCard col='5'>
-        <Indicators title='0.01' value='ETH/CYB' />
-        <Indicators title={ETHRaised} value='Raised, ETH' />
-        <CardArrow win={this.props.win} title="70%" value="Opportunity" />
-        <Indicators title={ATOMsRaised} value='Raised, ATOMs' />
-        <Indicators title='0.01' value='ATOM/CYB' />
-      </ContainerCard>
-    );
-  }
-}
+export const Statistics = ({
+  firstLeftTitle,
+  firstLeftValue,
+  secondLeftTitle,
+  secondLeftValue,
+  secondRightTitle,
+  secondRightValue,
+  firstRightTitle,
+  firstRightValue
+}) => (
+  <ContainerCard col={4}>
+    <Indicators title={firstLeftTitle} value={firstLeftValue} />
+    <Indicators title={secondLeftTitle} value={secondLeftValue} />
+    {/* <Card title={centerCardTitle} value={centerCardValue} /> */}
+    <Indicators title={secondRightTitle} value={secondRightValue} />
+    <Indicators title={firstRightTitle} value={firstRightValue} />
+  </ContainerCard>
+);

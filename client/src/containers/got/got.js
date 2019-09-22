@@ -26,13 +26,17 @@ import { asyncForEach, formatNumber, run } from '../../utils/utils';
 const url =
   'https://herzner1.cybernode.ai/cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8';
 
+const currenciesUrl =
+  'https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eth';
+
 class Got extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       wins: '',
       ATOMsRaised: 0,
-      ETHRaised: 0
+      ETHRaised: 0,
+      course: 0
     };
   }
 
@@ -40,6 +44,7 @@ class Got extends PureComponent {
     // if (this.props.web3) {
     run(this.getStatisticsAtom);
     run(this.getStatisticsETH);
+    run(this.getArbitrage);
     // }
   }
 
@@ -65,15 +70,40 @@ class Got extends PureComponent {
     } = this.props;
 
     const dailyTotals = await methods.dailyTotals(59).call();
-
-    // await asyncForEach(
-    //   Array.from(Array(dailyTotalsUtils.length).keys()),
-    //   async item => {
-    //     const dt = dailyTotalsUtils[item];
-    //     raised += parseFloat(dt) / Math.pow(10, 18);
-    //   });
     this.setState({
       ETHRaised: Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000
+    });
+  };
+
+  getArbitrage = async () => {
+    const {
+      contract: { methods }
+    } = this.props;
+
+    const dailyTotals = await methods.dailyTotals(59).call();
+    const currencies = await fetch(currenciesUrl);
+    const course = await currencies.json();
+    const response = await fetch(url);
+    const dataAtom = await response.json();
+    let amount = 0;
+
+    await asyncForEach(
+      Array.from(Array(dataAtom.length).keys()),
+      async item => {
+        amount += Number.parseInt(
+          dataAtom[item].tx.value.msg[0].value.amount[0].amount
+        );
+      }
+    );
+    const atomETH =
+      (Math.floor((amount / Math.pow(10, 12)) * 1000) / 1000) *
+      course.cosmos.eth;
+    const eth = Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000;
+
+    console.log(1 - (atomETH / eth));
+
+    this.setState({
+      course: course.cosmos.eth
     });
   };
 
@@ -92,7 +122,9 @@ class Got extends PureComponent {
   getWarning = warning => this.setState({ warning });
 
   render() {
-    const { wins, ATOMsRaised, ETHRaised } = this.state;
+    const { wins, ATOMsRaised, ETHRaised, course } = this.state;
+    console.log(course);
+    const cyb = 100 * Math.pow(10, 12);
     return (
       <span>
         <button onClick={this.onClikWinAtom}>atom</button>
@@ -100,9 +132,21 @@ class Got extends PureComponent {
         <main className="block-body">
           {/* <span className="caption">Game of Thrones</span> */}
           <Statistics
-            win={wins}
-            ATOMsRaised={formatNumber(ATOMsRaised)}
-            ETHRaised={formatNumber(ETHRaised)}
+            firstLeftTitle="ETH/CYB"
+            firstLeftValue={formatNumber((ETHRaised * Math.pow(10, 18)) / cyb)}
+            secondLeftTitle="Raised, ETH"
+            secondLeftValue={formatNumber(ETHRaised)}
+            // centerCardTitle=''
+            // centerCardValue=''
+            secondRightTitle="Raised, ATOMs"
+            secondRightValue={formatNumber(
+              Math.floor((ATOMsRaised / Math.pow(10, 12)) * 1000) / 1000
+            )}
+            firstRightTitle="ATOM/CYB"
+            firstRightValue={formatNumber(ATOMsRaised / cyb)}
+            // win={wins}
+            // ATOMsRaised={formatNumber(ATOMsRaised)}
+            // ETHRaised={formatNumber(ETHRaised)}
           />
           {/* <span className="chapter">
             <a>Ends in</a>
