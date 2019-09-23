@@ -18,7 +18,7 @@ const run = async func => {
 
 const roundNumber = (num, scale) => {
   if (!`${num}`.includes('e')) {
-    return +`${Math.round(`${num}e+${scale}`)}e-${scale}`;
+    return +`${Math.floor(`${num}e+${scale}`)}e-${scale}`;
   }
   const arr = `${num}`.split('e');
   let sig = '';
@@ -26,7 +26,7 @@ const roundNumber = (num, scale) => {
     sig = '+';
   }
   const i = `${+arr[0]}e${sig}${+arr[1] + scale}`;
-  const j = Math.round(i);
+  const j = Math.floor(i);
   const k = +`${j}e-${scale}`;
   return k;
 };

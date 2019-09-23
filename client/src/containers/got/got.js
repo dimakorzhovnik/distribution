@@ -21,7 +21,12 @@ import {
   Timer,
   CardArrow
 } from '../../components';
-import { asyncForEach, formatNumber, run } from '../../utils/utils';
+import {
+  asyncForEach,
+  formatNumber,
+  roundNumber,
+  run
+} from '../../utils/utils';
 
 const url =
   'https://herzner1.cybernode.ai/cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8';
@@ -36,104 +41,142 @@ class Got extends PureComponent {
       wins: '',
       ATOMsRaised: 0,
       ETHRaised: 0,
-      course: 0
+      difference: {},
+      arow: 0
     };
   }
 
   async componentDidMount() {
-    // if (this.props.web3) {
-    run(this.getStatisticsAtom);
-    run(this.getStatisticsETH);
+    const {
+      contract: { methods },
+      accounts,
+      web3
+    } = this.props;
+    run(this.getEthAtomCourse);
+    run(this.getStatistics);
     run(this.getArbitrage);
-    // }
+
+    const subscription = web3.eth.subscribe(
+      'logs',
+      {
+        address: '0x6c9c39d896b51e6736dbd3da710163903a3b091b',
+        topics: [
+          '0xe054057d0479c6218d6ec87be73f88230a7e4e1f064cee6e7504e2c4cd9d6150'
+        ]
+      },
+      (error, result) => {
+        if (!error) console.log(result);
+        if (
+          result.data.indexOf(
+            accounts[0].toLowerCase().substr(2, accounts[0].length)
+          ) !== -1
+        ) {
+          run(this.getEthAtomCourse);
+          run(this.getStatistics);
+          run(this.getArbitrage);
+        }
+      }
+    );
+    // unsubscribes the subscription
+    subscription.unsubscribe((error, success) => {
+      if (success) console.log('Successfully unsubscribed!');
+    });
   }
 
-  getStatisticsAtom = async () => {
-    // const { data } = this.state;
+  getEthAtomCourse = async () => {
+    const {
+      contract: { methods }
+    } = this.props;
+    const dailyTotals = await methods.dailyTotals(59).call();
+    let ETHRaised = 0;
+    let ATOMsRaised = 0;
+
+    ETHRaised = Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000;
     const response = await fetch(url);
     const data = await response.json();
-    let amount = 0;
-
-    await asyncForEach(Array.from(Array(data.length).keys()), async item => {
-      amount += Number.parseInt(
+    asyncForEach(Array.from(Array(data.length).keys()), async item => {
+      ATOMsRaised += Number.parseInt(
         data[item].tx.value.msg[0].value.amount[0].amount
       );
     });
-    this.setState({
-      ATOMsRaised: amount
-    });
-  };
-
-  getStatisticsETH = async () => {
-    const {
-      contract: { methods }
-    } = this.props;
-
-    const dailyTotals = await methods.dailyTotals(59).call();
-    this.setState({
-      ETHRaised: Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000
-    });
-  };
-
-  getArbitrage = async () => {
-    const {
-      contract: { methods }
-    } = this.props;
-
-    const dailyTotals = await methods.dailyTotals(59).call();
     const currencies = await fetch(currenciesUrl);
     const course = await currencies.json();
-    const response = await fetch(url);
-    const dataAtom = await response.json();
-    let amount = 0;
+    const raised = {
+      ATOMsRaised,
+      ETHRaised,
+      course
+    };
+    return raised;
+  };
 
-    await asyncForEach(
-      Array.from(Array(dataAtom.length).keys()),
-      async item => {
-        amount += Number.parseInt(
-          dataAtom[item].tx.value.msg[0].value.amount[0].amount
-        );
+  getStatistics = async () => {
+    const cyb = 10 * Math.pow(10, 4);
+    let AtomEthRaised = 0;
+    let ethRaised = 0;
+    this.getEthAtomCourse().then(result => {
+      this.setState({
+        ETHRaised: result.ETHRaised,
+        ATOMsRaised: result.ATOMsRaised
+      });
+      AtomEthRaised = roundNumber(
+        (result.ATOMsRaised / Math.pow(10, 12) / cyb) *
+          result.course.cosmos.eth,
+        7
+      );
+      ethRaised = roundNumber(result.ETHRaised / cyb, 7);
+      if (ethRaised > AtomEthRaised) {
+        this.setState({
+          difference: {
+            win: 'atom',
+            diff: ethRaised / AtomEthRaised
+          }
+        });
+      } else {
+        this.setState({
+          difference: {
+            win: 'eth',
+            diff: AtomEthRaised / ethRaised
+          }
+        });
       }
-    );
-    const atomETH =
-      (Math.floor((amount / Math.pow(10, 12)) * 1000) / 1000) *
-      course.cosmos.eth;
-    const eth = Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000;
-
-    console.log(1 - (atomETH / eth));
-
-    this.setState({
-      course: course.cosmos.eth
     });
   };
 
-  onClikWinAtom = () => {
-    this.setState({
-      wins: 'atom'
+  getArbitrage = () => {
+    let ethRaised = 0;
+    let AtomRaised = 0;
+    let arow = 0;
+    let win = '';
+    this.getEthAtomCourse().then(result => {
+      ethRaised = roundNumber(result.ETHRaised, 7);
+      AtomRaised = roundNumber(
+        (result.ATOMsRaised / Math.pow(10, 12)) * result.course.cosmos.eth,
+        7
+      );
+      if (ethRaised > AtomRaised) {
+        arow = -1 * (1 - AtomRaised / ethRaised) * 90;
+        win = 'eth';
+      } else {
+        arow = (1 - ethRaised / AtomRaised) * 90;
+        win = 'atom';
+      }
+      this.setState({
+        arow,
+        win
+      });
     });
   };
-
-  onClikWinEth = () => {
-    this.setState({
-      wins: 'eth'
-    });
-  };
-
-  getWarning = warning => this.setState({ warning });
 
   render() {
-    const { wins, ATOMsRaised, ETHRaised, course } = this.state;
-    console.log(course);
-    const cyb = 100 * Math.pow(10, 12);
+    const { ATOMsRaised, ETHRaised, difference, arow, win } = this.state;
+    const cyb = 10 * Math.pow(10, 4);
     return (
       <span>
-        <button onClick={this.onClikWinAtom}>atom</button>
-        <button onClick={this.onClikWinEth}>eth</button>
         <main className="block-body">
           {/* <span className="caption">Game of Thrones</span> */}
           <Statistics
             firstLeftTitle="ETH/CYB"
-            firstLeftValue={formatNumber((ETHRaised * Math.pow(10, 18)) / cyb)}
+            firstLeftValue={roundNumber(ETHRaised / cyb, 6)}
             secondLeftTitle="Raised, ETH"
             secondLeftValue={formatNumber(ETHRaised)}
             // centerCardTitle=''
@@ -143,32 +186,48 @@ class Got extends PureComponent {
               Math.floor((ATOMsRaised / Math.pow(10, 12)) * 1000) / 1000
             )}
             firstRightTitle="ATOM/CYB"
-            firstRightValue={formatNumber(ATOMsRaised / cyb)}
-            // win={wins}
-            // ATOMsRaised={formatNumber(ATOMsRaised)}
-            // ETHRaised={formatNumber(ETHRaised)}
+            firstRightValue={roundNumber(
+              ATOMsRaised / Math.pow(10, 12) / cyb,
+              6
+            )}
           />
-          {/* <span className="chapter">
-            <a>Ends in</a>
-          </span> */}
-          {/* <div className="container-timer">
-            <Timer />
-          </div> */}
-
-          <Container win={wins} />
-          <SeeSaw win={wins} />
+          <Container
+            win={win}
+            diff={roundNumber(difference.diff, 2)}
+            arow={arow}
+          />
           <ContainerCard>
             <div className="container-text">
-              <div className="paragraph">
+              {/* <div className="paragraph">
                 Get <a>THC</a> and participate <br /> in foundation
               </div>
-              <div className="paragraph">Get 10% of CYBs for ETH</div>
+              <div className="paragraph">Get 10% of CYBs for ETH</div> */}
+              {difference.win === 'eth' && (
+                <div className="difference-container">
+                  <div className="difference-container-value">
+                    {roundNumber(difference.diff, 2)} x
+                  </div>
+                  <span className="difference-container-text">
+                    more profitable now
+                  </span>
+                </div>
+              )}
             </div>
             <div className="container-text">
-              <div className="paragraph">
+              {/* <div className="paragraph">
                 Don't Get <a>THC</a>
               </div>
-              <div className="paragraph">Get 10% of CYBs for ATOM</div>
+              <div className="paragraph">Get 10% of CYBs for ATOM</div> */}
+              {difference.win === 'atom' && (
+                <div className="difference-container">
+                  <div className="difference-container-value">
+                    {roundNumber(difference.diff, 2)} x
+                  </div>
+                  <span className="difference-container-text">
+                    more profitable now
+                  </span>
+                </div>
+              )}
             </div>
           </ContainerCard>
         </main>

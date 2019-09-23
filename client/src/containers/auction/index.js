@@ -80,7 +80,9 @@ class Auction extends PureComponent {
             accounts[0].toLowerCase().substr(2, accounts[0].length)
           ) !== -1
         ) {
-          window.location.reload();
+          run(this.statistics);
+          run(this.dinamics);
+          run(this.getDataTable);
         }
       }
     );
@@ -105,7 +107,9 @@ class Auction extends PureComponent {
             accounts[0].toLowerCase().substr(2, accounts[0].length)
           ) !== -1
         ) {
-          window.location.reload();
+          run(this.statistics);
+          run(this.dinamics);
+          run(this.getDataTable);
         }
       }
     );

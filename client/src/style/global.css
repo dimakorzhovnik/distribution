@@ -156,3 +156,7 @@ input:active{
   ::-ms-input-placeholder { /* Microsoft Edge */
     color: #3ab793;
   }
+
+  .trigger{
+      width: 100%;
+  }

@@ -203,7 +203,7 @@ span.right-input {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     justify-items: center;
     width: 100%;
-    align-items: center;
+    /* align-items: center; */
     margin-bottom: 50px;
 }
 

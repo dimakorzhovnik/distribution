@@ -14,7 +14,7 @@ const AppRouter = () => (
     {/* <Route path="/" component={App} /> */}
     <Route path="/" component={Got} />
  
-    {/* <Route path="/funding" component={Funding} /> */}
+    {/* <Route path="/funding" component={Funding} /> */}s
     {/* <Route path="/auction" component={Auction} /> */}
 
     {/* <Route path='*' exact component={ NotFound } /> */}

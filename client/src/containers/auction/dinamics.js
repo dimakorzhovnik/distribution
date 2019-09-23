@@ -165,11 +165,11 @@ export class Dinamics extends Component {
           color: '#fff',
           size: 12
         }
-      }
+      },
 
       // }
       // width: 550,
-      // height: 500,
+      height: 500
     };
     const config = {
       displayModeBar: false,

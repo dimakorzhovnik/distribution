@@ -10,7 +10,7 @@ export const Statistics = ({
   cap,
   TOKEN_NAME
 }) => (
-  <ContainerCard col="5">
+  <ContainerCard styles={{ alignItems: 'center' }} col="5">
     <Indicators
       title={`${round} of ${roundAll}`}
       value="Round"
