@@ -1,11 +1,7 @@
 import React, { PureComponent } from 'react';
 import withWeb3 from '../../components/web3/withWeb3';
-import {
-  Statistics,
-  ActionBar,
-  Container,
-  ContainerCard
-} from '../../components';
+import { ActionBar, Container, ContainerCard } from '../../components';
+import { Statistics } from './statistics';
 import {
   asyncForEach,
   formatNumber,
@@ -33,22 +29,11 @@ class Got extends PureComponent {
   }
 
   async componentDidMount() {
+    const { web3 } = this.props;
     run(this.getStatistics);
     run(this.getArbitrage);
     run(this.subscription);
-  }
-
-  componentWillUnmount() {
-    this.controller.abort();
-    // unsubscribes the subscription
-    this.subscription.unsubscribe((error, success) => {
-      if (success) console.log('Successfully unsubscribed!');
-    });
-  }
-
-  subscription = () => {
-    const { web3 } = this.props;
-    web3.eth.subscribe(
+    const subscription = web3.eth.subscribe(
       'logs',
       {
         address: '0x6c9c39d896b51e6736dbd3da710163903a3b091b',
@@ -64,7 +49,16 @@ class Got extends PureComponent {
         }
       }
     );
-  };
+
+    subscription.unsubscribe((error, success) => {
+      if (success) console.log('Successfully unsubscribed!');
+    });
+  }
+
+  componentWillUnmount() {
+    this.controller.abort();
+    // unsubscribes the subscription
+  }
 
   getEthAtomCourse = async () => {
     const {

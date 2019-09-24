@@ -8,8 +8,6 @@ export { WorkshopsAgenda } from './blocks/WorkshopsAgenda';
 export { BuyButton } from './web3/BuyTicket';
 export { ConfirmButton } from './web3/ConfirmTicket';
 export { Dots } from './ui/Dots';
-export { Dinamics } from './dinamics/dinamics';
-export { Statistics } from './statistics/statistics';
 export { Table } from './table/table';
 export { ActionBar } from './actionBar/actionBar';
 export { SeeSaw } from './SeeSaw/SeeSaw';

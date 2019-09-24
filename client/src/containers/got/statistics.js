@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Indicators, Card, ContainerCard, CardArrow } from './item';
+import { Indicators, Card, ContainerCard, CardArrow } from '../../components/index';
 
 export const Statistics = ({
   firstLeftTitle,
