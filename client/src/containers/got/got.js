@@ -1,25 +1,10 @@
 import React, { PureComponent } from 'react';
 import withWeb3 from '../../components/web3/withWeb3';
 import {
-  Nums,
-  WhatWhereWhen,
-  Ticket,
-  ApplyForm,
-  Shares,
-  TalksAgenda,
-  BuyButton,
-  ConfirmButton,
-  Dots,
-  Dinamics,
   Statistics,
-  Table,
   ActionBar,
-  SeeSaw,
   Container,
-  Card,
-  ContainerCard,
-  Timer,
-  CardArrow
+  ContainerCard
 } from '../../components';
 import {
   asyncForEach,
@@ -35,10 +20,11 @@ const currenciesUrl =
   'https://api.coingecko.com/api/v3/simple/price?ids=cosmos&vs_currencies=eth';
 
 class Got extends PureComponent {
+  controller = new AbortController();
+
   constructor(props) {
     super(props);
     this.state = {
-      wins: '',
       ATOMsRaised: 0,
       ETHRaised: 0,
       difference: {},
@@ -47,16 +33,22 @@ class Got extends PureComponent {
   }
 
   async componentDidMount() {
-    const {
-      contract: { methods },
-      accounts,
-      web3
-    } = this.props;
-    run(this.getEthAtomCourse);
     run(this.getStatistics);
     run(this.getArbitrage);
+    run(this.subscription);
+  }
 
-    const subscription = web3.eth.subscribe(
+  componentWillUnmount() {
+    this.controller.abort();
+    // unsubscribes the subscription
+    this.subscription.unsubscribe((error, success) => {
+      if (success) console.log('Successfully unsubscribed!');
+    });
+  }
+
+  subscription = () => {
+    const { web3 } = this.props;
+    web3.eth.subscribe(
       'logs',
       {
         address: '0x6c9c39d896b51e6736dbd3da710163903a3b091b',
@@ -65,23 +57,14 @@ class Got extends PureComponent {
         ]
       },
       (error, result) => {
-        if (!error) console.log(result);
-        if (
-          result.data.indexOf(
-            accounts[0].toLowerCase().substr(2, accounts[0].length)
-          ) !== -1
-        ) {
-          run(this.getEthAtomCourse);
+        if (!error) {
           run(this.getStatistics);
           run(this.getArbitrage);
+          console.log(result);
         }
       }
     );
-    // unsubscribes the subscription
-    subscription.unsubscribe((error, success) => {
-      if (success) console.log('Successfully unsubscribed!');
-    });
-  }
+  };
 
   getEthAtomCourse = async () => {
     const {
@@ -92,14 +75,18 @@ class Got extends PureComponent {
     let ATOMsRaised = 0;
 
     ETHRaised = Math.floor((dailyTotals / Math.pow(10, 18)) * 1000) / 1000;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      signal: this.controller.signal
+    });
     const data = await response.json();
     asyncForEach(Array.from(Array(data.length).keys()), async item => {
       ATOMsRaised += Number.parseInt(
         data[item].tx.value.msg[0].value.amount[0].amount
       );
     });
-    const currencies = await fetch(currenciesUrl);
+    const currencies = await fetch(currenciesUrl, {
+      signal: this.controller.signal
+    });
     const course = await currencies.json();
     const raised = {
       ATOMsRaised,
@@ -110,44 +97,30 @@ class Got extends PureComponent {
   };
 
   getStatistics = async () => {
-    const cyb = 10 * Math.pow(10, 4);
-    let AtomEthRaised = 0;
-    let ethRaised = 0;
     this.getEthAtomCourse().then(result => {
       this.setState({
         ETHRaised: result.ETHRaised,
         ATOMsRaised: result.ATOMsRaised
       });
-      AtomEthRaised = roundNumber(
-        (result.ATOMsRaised / Math.pow(10, 12) / cyb) *
-          result.course.cosmos.eth,
-        7
-      );
-      ethRaised = roundNumber(result.ETHRaised / cyb, 7);
-      if (ethRaised > AtomEthRaised) {
-        this.setState({
-          difference: {
-            win: 'atom',
-            diff: ethRaised / AtomEthRaised
-          }
-        });
-      } else {
-        this.setState({
-          difference: {
-            win: 'eth',
-            diff: AtomEthRaised / ethRaised
-          }
-        });
-      }
     });
   };
 
   getArbitrage = () => {
     let ethRaised = 0;
     let AtomRaised = 0;
+    let ethCYB = 0;
+    let atomsCYB = 0;
+    let difference = {};
     let arow = 0;
     let win = '';
+    const cyb = 10 * Math.pow(10, 4);
     this.getEthAtomCourse().then(result => {
+      ethCYB = roundNumber(result.ETHRaised / cyb, 7);
+      atomsCYB = roundNumber(
+        (result.ATOMsRaised / Math.pow(10, 12) / cyb) *
+          result.course.cosmos.eth,
+        7
+      );
       ethRaised = roundNumber(result.ETHRaised, 7);
       AtomRaised = roundNumber(
         (result.ATOMsRaised / Math.pow(10, 12)) * result.course.cosmos.eth,
@@ -156,13 +129,22 @@ class Got extends PureComponent {
       if (ethRaised > AtomRaised) {
         arow = -1 * (1 - AtomRaised / ethRaised) * 90;
         win = 'eth';
+        difference = {
+          win: 'atom',
+          diff: ethCYB / atomsCYB
+        };
       } else {
         arow = (1 - ethRaised / AtomRaised) * 90;
         win = 'atom';
+        difference = {
+          win: 'eth',
+          diff: atomsCYB / ethCYB
+        };
       }
       this.setState({
         arow,
-        win
+        win,
+        difference
       });
     });
   };
@@ -179,8 +161,6 @@ class Got extends PureComponent {
             firstLeftValue={roundNumber(ETHRaised / cyb, 6)}
             secondLeftTitle="Raised, ETH"
             secondLeftValue={formatNumber(ETHRaised)}
-            // centerCardTitle=''
-            // centerCardValue=''
             secondRightTitle="Raised, ATOMs"
             secondRightValue={formatNumber(
               Math.floor((ATOMsRaised / Math.pow(10, 12)) * 1000) / 1000

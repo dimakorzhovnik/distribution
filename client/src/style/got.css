@@ -592,3 +592,26 @@
     }
 }
 
+.vitalik-popups {
+    position: absolute;
+    right: 3%;
+    top: 2%;
+    box-shadow: 0 0 4px #3ab793;
+    padding: 20px;
+    border-radius: 3px;
+    min-width: 6vw;
+    text-align: center;
+    max-width: 130px;
+}
+
+.jae-popups {
+    position: absolute;
+    left: 3%;
+    top: 10%;
+    box-shadow: 0 0 4px #3ab793;
+    padding: 20px;
+    border-radius: 3px;
+    min-width: 6vw;
+    text-align: center;
+    max-width: 130px;
+}

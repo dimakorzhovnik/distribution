@@ -16,12 +16,14 @@ export class Container extends Component {
         <div className={`vitalik ${win === 'eth' ? 'win-opacity' : ''}`}>
           {win === 'eth' && <Crown />}
           <img src={vitalik} />
+          <div className='vitalik-popups'>fgnr</div>
         </div>
         {/* <div>{diff}</div> */}
         <Speedometer arow={arow} />
         <div className={`jae ${win ==='atom' ? 'win-opacity' : ''}`}>
           {win === 'atom' && <CrownJae />}
           <img src={jae} />
+          <div className='jae-popups'>dfgdfcx</div>
         </div>
       </div>
     );

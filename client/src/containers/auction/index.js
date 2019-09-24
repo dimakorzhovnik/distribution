@@ -4,7 +4,7 @@ import { Statistics } from './statistics';
 import { ActionBar } from './actionBar';
 import { Dinamics } from './dinamics';
 import { Table } from './table';
-import { Loading, Popup } from '../../components/index';
+import { Loading } from '../../components/index';
 import {
   run,
   formatNumber,
@@ -14,15 +14,6 @@ import {
 } from '../../utils/utils';
 
 const TOKEN_NAME = 'GOL';
-
-Date.prototype.toShortFormat = function() {
-  const day = this.getDate();
-  const month_index = this.getMonth();
-  const year = this.getFullYear();
-
-  // return "" + day + "-" + month_names[month_index] + "-" + year;
-  return `${year}-${month_index + 1}-${day}`;
-};
 
 class Auction extends PureComponent {
   constructor(props) {
@@ -55,15 +46,10 @@ class Auction extends PureComponent {
       web3
     } = this.props;
 
-
-    // timer(this.endRound);
     timer(this.getTimeEndRound);
-    // this.setState({
-    //   popupsBuy : buyTransactionSuccess,
-    // })
-      run(this.statistics);
-      run(this.dinamics);
-      run(this.getDataTable);
+    run(this.statistics);
+    run(this.dinamics);
+    run(this.getDataTable);
 
     const subscription = web3.eth.subscribe(
       'logs',
@@ -74,12 +60,8 @@ class Auction extends PureComponent {
         ]
       },
       (error, result) => {
-        if (!error) console.log(result);
-        if (
-          result.data.indexOf(
-            accounts[0].toLowerCase().substr(2, accounts[0].length)
-          ) !== -1
-        ) {
+        if (!error) {
+          console.log(result);
           run(this.statistics);
           run(this.dinamics);
           run(this.getDataTable);
@@ -101,12 +83,8 @@ class Auction extends PureComponent {
         ]
       },
       (error, result) => {
-        if (!error) console.log(result);
-        if (
-          result.data.indexOf(
-            accounts[0].toLowerCase().substr(2, accounts[0].length)
-          ) !== -1
-        ) {
+        if (!error) {
+          console.log(result);
           run(this.statistics);
           run(this.dinamics);
           run(this.getDataTable);
