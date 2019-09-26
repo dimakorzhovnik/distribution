@@ -11,7 +11,6 @@ export { Dots } from './ui/Dots';
 export { Table } from './table/table';
 export { ActionBar } from './actionBar/actionBar';
 export { SeeSaw } from './SeeSaw/SeeSaw';
-export { Container } from './container/container';
 export { Timer } from './timer/timer';
 export { ContainerCard, Indicators, Card, CardArrow } from './statistics/item';
 export { Tooltip } from './tooltip/tooltip';

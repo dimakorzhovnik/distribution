@@ -141,7 +141,7 @@ const Succesfuuly = ({ onClickBtn, hash }) => (
             & confirned.
           </div>
           <div className="text-default">
-              Check TX status:{' '}
+            Check TX status:{' '}
             <a
               className="hash"
               href={`https://rinkeby.etherscan.io/tx/${hash}`}
@@ -202,12 +202,35 @@ export class ActionBar extends Component {
       amount: e.target.value
     });
 
-  onClickFuckGoogle = () => {
-    const { minRound } = this.props;
-    this.setState({
-      step: 'contributeETH',
-      round: minRound
-    });
+  onClickFuckGoogle = async () => {
+    const { minRound, web3 } = this.props;
+    if (web3.currentProvider.host)
+      return console.log(
+        'Non-Ethereum browser detected. You should consider trying MetaMask!'
+      );
+    if (window.ethereum) {
+      try {
+        const accounts = await window.ethereum.enable();
+        if (accounts.length) {
+          // console.log(accounts[0]);
+          this.setState({
+            step: 'contributeETH',
+            round: minRound
+          });
+        }
+      } catch (error) {
+        console.log('You declined transaction', error);
+      }
+    } else if (window.web3) {
+      const accounts = await web3.eth.getAccounts();
+      if (accounts.length) {
+        // console.log(accounts[0]);
+        this.setState({
+          step: 'contributeETH',
+          round: minRound
+        });
+      }
+    } else return console.log('Your metamask is locked!');
   };
 
   onClickTrackContribution = () =>
@@ -288,8 +311,24 @@ export class ActionBar extends Component {
       validInputRound,
       validInputAmount
     } = this.state;
-    const { minRound, maxRound } = this.props;
+    const { minRound, maxRound, web3 } = this.props;
     const btnConfirm = round >= minRound && round <= maxRound - 1 && amount > 0;
+    if (web3.givenProvider === null)
+      return (
+        <div className="container-action">
+          <div className="container-action-content">
+            <div className="action-text">
+              <span className="actionBar-text">
+                <span>Please install</span>
+                &nbsp;
+                <a href="https://metamask.io/">Metamask extension</a>
+                &nbsp;
+                <span>and refresh the page</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      );
 
     if (step === 'start') {
       return <StartState onClickBtn={this.onClickFuckGoogle} />;

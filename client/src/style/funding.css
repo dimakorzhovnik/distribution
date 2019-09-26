@@ -245,20 +245,20 @@ span.right-input {
     box-shadow: 0 0 15px #3ab793;
 }
 
-.card-title {
+/* .card-title {
     display: inline-block;
     margin-bottom: 15px;
     color: #3ab793;
     font-size: 30px;
     line-height: 20px;
-}
-
+} */
+/* 
 .card-value {
     display: inline-block;
     color: #3ab793;
     font-size: 25px;
     line-height: 20px;
-}
+} */
 
 .dots {
     width: 10px;
@@ -294,13 +294,13 @@ span.right-input {
     align-items: center;
 }
 
-.caption {
+/* .caption {
     display: inline-block;
     width: 100%;
     margin-bottom: 70px;
     font-size: 30px;
     text-align: center;
-}
+} */
 
 .chapter {
     display: inline-block;

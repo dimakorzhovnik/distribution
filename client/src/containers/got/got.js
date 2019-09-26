@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import withWeb3 from '../../components/web3/withWeb3';
-import { ActionBar, Container, ContainerCard } from '../../components';
+import { ActionBar, ContainerCard } from '../../components';
 import { Statistics } from './statistics';
+import { VitalikJae } from './vitalikJae';
 import {
   asyncForEach,
   formatNumber,
@@ -165,11 +166,7 @@ class Got extends PureComponent {
               6
             )}
           />
-          <Container
-            win={win}
-            diff={roundNumber(difference.diff, 2)}
-            arow={arow}
-          />
+          <VitalikJae win={win} diff={difference} arow={arow} />
           <ContainerCard>
             <div className="container-text">
               {/* <div className="paragraph">

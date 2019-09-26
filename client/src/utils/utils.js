@@ -39,7 +39,7 @@ const asyncForEach = async (array, callback) => {
   };
 
   const timer = func => {
-    setInterval(func, 1000);
+    setInterval(func, 10000);
   };
 
 export { run, roundNumber, formatNumber, asyncForEach, timer };

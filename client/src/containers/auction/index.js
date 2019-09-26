@@ -40,17 +40,20 @@ class Auction extends PureComponent {
   }
 
   async componentDidMount() {
-    const {
-      contract: { methods },
-      accounts,
-      web3
-    } = this.props;
-
-    timer(this.getTimeEndRound);
-    run(this.statistics);
-    run(this.dinamics);
-    run(this.getDataTable);
-
+    const { accounts, web3 } = this.props;
+    if (accounts === null) {
+      console.log('no-accounts');
+      this.getTimeEndRound();
+      this.statistics();
+      this.dinamics();
+      this.getDataTable();
+    } else {
+      console.log('accounts');
+      timer(this.getTimeEndRound);
+      run(this.statistics);
+      run(this.dinamics);
+      run(this.getDataTable);
+    }
     const subscription = web3.eth.subscribe(
       'logs',
       {
@@ -96,7 +99,6 @@ class Auction extends PureComponent {
     subscriptionClaim.unsubscribe((error, success) => {
       if (success) console.log('Successfully unsubscribed!');
     });
-
     const { contract } = this.props;
     const youCYB = (await contract.getPastEvents('LogClaim', {
       fromBlock: 0,

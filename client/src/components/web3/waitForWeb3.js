@@ -2,7 +2,7 @@ import Web3 from 'web3';
 
 let web3js;
 
-const resolveWeb3 = resolve => {
+const resolveWeb3 = async resolve => {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (window.web3) {
     web3js = new Web3(window.web3.currentProvider);
@@ -12,7 +12,7 @@ const resolveWeb3 = resolve => {
   } else {
     web3js = new Web3();
     web3js.setProvider(
-      new web3js.providers.HttpProvider('http://rinkeby.infura.io/')
+      new web3js.providers.HttpProvider('https://rinkeby.infura.io/metamask')
     );
   }
 

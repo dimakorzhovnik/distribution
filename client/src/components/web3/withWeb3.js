@@ -38,31 +38,40 @@ const injectWeb3 = InnerComponent =>
     }
 
     async getWeb3() {
-      await window.ethereum.enable();
       try {
         const web3 = await waitForWeb3();
+        console.log(web3.givenProvider);
         const contract = await new web3.eth.Contract(abi, this.smart);
         const contractAuctionUtils = await new web3.eth.Contract(
           AuctionUtils.abi,
           this.smartAuctionUtils
         );
-        const networkContract = Object.keys(Auction.networks);
-        const networkId = await web3.eth.net.getId();
-        const accounts = await web3.eth.getAccounts();
-        this.setState({
-          web3,
-          contract,
-          contractAuctionUtils,
-          accounts: accounts[0],
-          networkId,
-          isCorrectNetwork: networkContract.indexOf(`${networkId}`) !== -1
-        });
+        if (web3.givenProvider === null) {
+          this.setState({
+            web3,
+            contract,
+            contractAuctionUtils,
+            accounts: null,
+            networkId: null,
+            isCorrectNetwork: true
+          });
+        } else {
+          const networkContract = Object.keys(Auction.networks);
+          const networkId = await web3.eth.net.getId();
+          const accounts = await web3.eth.getAccounts();
+          this.setState({
+            web3,
+            contract,
+            contractAuctionUtils,
+            accounts: accounts[0],
+            networkId,
+            isCorrectNetwork: networkContract.indexOf(`${networkId}`) !== -1
+          });
+        }
       } catch (e) {
         this.setState({ loading: false });
       }
     }
-    
-
 
     render() {
       const {
@@ -74,7 +83,7 @@ const injectWeb3 = InnerComponent =>
         isCorrectNetwork,
         buyTransactionSuccess
       } = this.state;
-      
+
       if (!isCorrectNetwork) {
         return (
           <NotFound text="Please connect to the Ethereum Rinkeby Network" />
