@@ -487,7 +487,7 @@ select {
 
 .table-rows-child {
     display: grid;
-    grid-template-columns: 2fr 1.2fr 0.5fr;
+    grid-template-columns: 1fr 0.4fr 0.5fr;
     width: 100%;
     height: 30px;
     align-items: center;
@@ -499,7 +499,7 @@ select {
 
 .table-rows-box{
     display: grid;
-    grid-template-columns: 1.3fr 1.2fr 0.5fr;
+    grid-template-columns: 1fr 0.4fr 0.5fr;
     width: 100%;
     height: 30px;
     align-items: center;
@@ -508,4 +508,8 @@ select {
 
 .table-rows-box:hover {
     color: #36d6ae;
+}
+
+.table-rows-box .number.address{
+    justify-content: flex-start;
 }

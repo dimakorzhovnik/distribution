@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { formatNumber } from '../../utils/utils';
+import { Tooltip } from '../../components/index';
 
 class Row extends Component {
   constructor(props) {
@@ -43,12 +44,25 @@ export class Table extends Component {
               </a>
             </div>
             <div className="number">{formatNumber(item.amount)}</div>
-            <div className="number">{item.height}</div>
+            <Tooltip placement='bottom' tooltip={`${formatNumber(Math.floor(item.cybEstimation))} CYBs`} >
+            <div className="number">
+              {formatNumber(
+                Math.floor((item.cybEstimation / Math.pow(10, 9)) * 1000) / 1000
+              )}
+            </div>
+            </Tooltip>
           </div>
         ))}
       >
-        <div className="number">{itemGroup.group}</div>
+        <div className="number address">{itemGroup.group}</div>
         <div className="number">{formatNumber(itemGroup.amountСolumn)}</div>
+        <Tooltip placement='bottom' tooltip={`${formatNumber(Math.floor(itemGroup.cyb))} CYBs`} >
+        <div className="number">
+          {formatNumber(
+            Math.floor((itemGroup.cyb / Math.pow(10, 9)) * 1000) / 1000
+          )}
+        </div>
+        </Tooltip>
       </Row>
     ));
     return (

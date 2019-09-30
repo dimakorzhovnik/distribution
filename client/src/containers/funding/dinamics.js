@@ -1,51 +1,15 @@
 import React, { Component } from 'react';
 import Plotly from 'react-plotly.js';
 import { x, y, z } from './list';
-import { x2, y2, z2 } from './list2';
 
 export class Dinamics extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      general: true,
+      share: false,
+      discount: false,
       activebtn: 'general',
-      data: [
-        {
-          type: 'scatter3d',
-          mode: 'lines',
-          opacity: 0.45,
-          x,
-          y,
-          z,
-          line: {
-            width: 8,
-            opacity: 1,
-            color: '#fff'
-          },
-          hovertemplate:
-            'TCYB allocated: %{x: .2f}%<br>' +
-            'ATOMs contributed: %{y}<br>' +
-            'Personal discount: %{z:.2f%}%<br>' +
-            '<extra></extra>'
-        },
-        {
-          type: 'scatter3d',
-          mode: 'lines',
-          x: x2,
-          y: y2,
-          z: z2,
-          line: {
-            width: 8,
-            color: '#36d6ae'
-          },
-          ticks: '',
-          showticklabels: false,
-          hovertemplate:
-            'TCYB allocated: %{x: .2f}%<br>' +
-            'ATOMs contributed: %{y}<br>' +
-            'Personal discount: %{z:.2f%}%<br>' +
-            '<extra></extra>'
-        }
-      ],
       center: {
         x: 0,
         y: 0,
@@ -74,46 +38,11 @@ export class Dinamics extends Component {
   }
 
   state1 = () => {
-    const trace1 = {
-      type: 'scatter3d',
-      mode: 'lines',
-      opacity: 0.45,
-      x,
-      y,
-      z,
-      line: {
-        width: 8,
-        opacity: 1,
-        color: '#fff'
-      },
-      hovertemplate:
-        'TCYB allocated: %{x: .2f}%<br>' +
-        'ATOMs contributed: %{y}<br>' +
-        'Personal discount: %{z:.2f%}%<br>' +
-        '<extra></extra>'
-    };
-    const trace2 = {
-      type: 'scatter3d',
-      mode: 'lines',
-      x: x2,
-      y: y2,
-      z: z2,
-      line: {
-        width: 8,
-        color: '#36d6ae'
-      },
-      ticks: '',
-      showticklabels: false,
-      hovertemplate:
-        'TCYB allocated: %{x: .2f}%<br>' +
-        'ATOMs contributed: %{y}<br>' +
-        'Personal discount: %{z:.2f%}%<br>' +
-        '<extra></extra>'
-    };
-    const data = [trace1, trace2];
     this.setState({
+      share: false,
+      general: true,
+      discount: false,
       activebtn: 'general',
-      data,
       center: {
         x: 0,
         y: 0,
@@ -139,25 +68,12 @@ export class Dinamics extends Component {
     });
   };
 
-  state2 = () =>
+  state2 = () => {
     this.setState({
       activebtn: 'share',
-      data: [
-        {
-          type: 'scatter',
-          mode: 'lines+points',
-          x: y,
-          y: x,
-          line: {
-            width: 2,
-            color: '#36d6ae'
-          },
-          hovertemplate:
-            'ATOMs contributed: %{x}' +
-            '<br>TCYB allocated: %{y: .2f}%' +
-            '<extra></extra>'
-        }
-      ],
+      share: true,
+      general: false,
+      discount: false,
       textX: 'Donation, ATOMs',
       textY: 'Shares, %',
       margin: {
@@ -168,25 +84,14 @@ export class Dinamics extends Component {
         pad: 4
       }
     });
+  };
 
-  state3 = () =>
+  state3 = () => {
     this.setState({
+      share: false,
+      general: false,
+      discount: true,
       activebtn: 'discount',
-      data: [
-        {
-          type: 'scatter',
-          x: y,
-          y: z,
-          line: {
-            width: 2,
-            color: '#36d6ae'
-          },
-          hovertemplate:
-            'ATOMs contributed: %{x}<br>' +
-            'Personal discount: %{y:.2f%}%<br>' +
-            '<extra></extra>'
-        }
-      ],
       textX: 'Donation, ATOMs',
       textY: 'Discount, %',
       margin: {
@@ -197,6 +102,7 @@ export class Dinamics extends Component {
         pad: 4
       }
     });
+  };
 
   render() {
     const {
@@ -204,11 +110,118 @@ export class Dinamics extends Component {
       eye,
       up,
       activebtn,
-      data,
+      // data,
       textX,
       textY,
-      margin
+      margin,
+      general,
+      share,
+      discount
     } = this.state;
+    const { data3d } = this.props;
+
+    const dataShare = [
+      {
+        type: 'scatter',
+        mode: 'lines+points',
+        opacity: 0.45,
+        x: y,
+        y: x,
+        line: {
+          width: 2,
+          opacity: 1,
+          color: '#fff'
+        },
+        hovertemplate:
+          'ATOMs contributed: %{x}' +
+          '<br>TCYB allocated: %{y: .2f}%' +
+          '<extra></extra>'
+      },
+      {
+        type: 'scatter',
+        mode: 'lines+points',
+        x: data3d.y,
+        y: data3d.x,
+        line: {
+          width: 2,
+          color: '#36d6ae'
+        },
+        hovertemplate:
+          'ATOMs contributed: %{x}' +
+          '<br>TCYB allocated: %{y: .2f}%' +
+          '<extra></extra>'
+      }
+    ];
+
+    const dataDiscount = [
+      {
+        type: 'scatter',
+        x: y,
+        y: z,
+        opacity: 0.45,
+        line: {
+          width: 2,
+          opacity: 1,
+          color: '#fff'
+        },
+        hovertemplate:
+          'ATOMs contributed: %{x}<br>' +
+          'Personal discount: %{y:.2f%}%<br>' +
+          '<extra></extra>'
+      },
+      {
+        type: 'scatter',
+        x: data3d.y,
+        y: data3d.z,
+        line: {
+          width: 2,
+          color: '#36d6ae'
+        },
+        hovertemplate:
+          'ATOMs contributed: %{x}<br>' +
+          'Personal discount: %{y:.2f%}%<br>' +
+          '<extra></extra>'
+      }
+    ];
+
+    const data = [
+      {
+        type: 'scatter3d',
+        mode: 'lines',
+        opacity: 0.45,
+        x,
+        y,
+        z,
+        line: {
+          width: 8,
+          opacity: 1,
+          color: '#fff'
+        },
+        hovertemplate:
+          'TCYB allocated: %{x: .2f}%<br>' +
+          'ATOMs contributed: %{y}<br>' +
+          'Personal discount: %{z:.2f%}%<br>' +
+          '<extra></extra>'
+      },
+      {
+        type: 'scatter3d',
+        mode: 'lines',
+        x: data3d.x,
+        y: data3d.y,
+        z: data3d.z,
+        line: {
+          width: 8,
+          color: '#36d6ae'
+        },
+        ticks: '',
+        showticklabels: false,
+        hovertemplate:
+          'TCYB allocated: %{x: .2f}%<br>' +
+          'ATOMs contributed: %{y}<br>' +
+          'Personal discount: %{z:.2f%}%<br>' +
+          '<extra></extra>'
+      }
+    ];
 
     const layout = {
       paper_bgcolor: '#000',
@@ -332,7 +345,12 @@ export class Dinamics extends Component {
     );
     return (
       <div className="container-dinamics">
-        <Plotly data={data} layout={layout} config={config} />
+        {general && <Plotly data={data} layout={layout} config={config} />}
+        {share && <Plotly data={dataShare} layout={layout} config={config} />}
+        {discount && (
+          <Plotly data={dataDiscount} layout={layout} config={config} />
+        )}
+
         <Btn />
       </div>
     );

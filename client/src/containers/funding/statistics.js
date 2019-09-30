@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Indicators, Card, ContainerCard } from '../../components/index';
 
-export const Statistics = ({ atomLeff }) => (
+export const Statistics = ({ atomLeff, won, price, discount }) => (
   <ContainerCard styles={{ alignItems: 'center' }} col="5">
     <Indicators
       tooltipValue="info"
@@ -9,9 +9,9 @@ export const Statistics = ({ atomLeff }) => (
       title="70 days"
       value="Funding ends (?)"
     />
-    <Indicators title="15.01%" value="Current discount" />
-    <Card title={atomLeff} value="ATOMs left" />
-    <Indicators title="12 TCYB" value="Won" />
-    <Indicators title="0.01 ETH/GCYB" value="Current price" />
+    <Indicators title="Current discount, %" value={discount} />
+    <Card title="ATOMs left" value={atomLeff} />
+    <Indicators title="Won, GCYBs" value={won} />
+    <Indicators title="Current price, GCYBs/ATOM" value={price} />
   </ContainerCard>
 );
