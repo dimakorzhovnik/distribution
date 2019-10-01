@@ -133,6 +133,7 @@ class Funding extends PureComponent {
     const won = cybWon(amount);
     const currentPrice = won / amount;
     const currentDiscount = funcDiscount(amount);
+    console.log('won', won);
     const statistics = {
       amount,
       atomLeff,
@@ -146,7 +147,7 @@ class Funding extends PureComponent {
       atomLeff,
       won: Math.floor((won / Math.pow(10, 9)) * 1000) / 1000,
       currentPrice: Math.floor((currentPrice / Math.pow(10, 9)) * 1000) / 1000,
-      currentDiscount: currentDiscount * 100
+      currentDiscount: Math.floor((currentDiscount * 100) * 1000) / 1000
     });
     return statistics;
   };
@@ -155,28 +156,59 @@ class Funding extends PureComponent {
     try {
       // const response = await fetch(url);
       // const data = await response.json();
-      // console.log(data);
 
       const table = [];
+      let temp = 0;
+      let sumtx = 0;
       await asyncForEach(Array.from(Array(data.length).keys()), async item => {
+        let estimation = 0;
+        const val =
+          Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
+        Math.pow(10, 6);
+        const tempVal = temp + val;
+        await this.getStatistics(data).then(statistics => {
+          // console.log('statistics.currentPrice', statistics.currentPrice);
+          // console.log('statistics.currentDiscount', statistics.currentDiscount);
+          // console.log('statistics.amount', statistics.amount);
+          // console.log('tempVal', tempVal);
+          // console.log('temp', temp);
+
+          estimation =
+            getEstimation(
+              statistics.currentPrice,
+              statistics.currentDiscount,
+              statistics.amount,
+              tempVal
+            ) -
+            getEstimation(
+              statistics.currentPrice,
+              statistics.currentDiscount,
+              statistics.amount,
+              temp
+            );
+        });
+        temp += val;
+        sumtx += estimation;
         table.push({
-          // address: ,
           txhash: data[item].txhash,
           height: data[item].height,
           from: data[item].tx.value.msg[0].value.from_address,
           amount:
-            Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
-            Math.pow(10, 6)
+            Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) *
+            10 ** -6,
+          estimation
         });
       });
-      const groupsV = table.reduce((obj, item) => {
+      console.log('sumtx', sumtx);
+      // console.log(table);
+      const groupsV = table.reverse().reduce((obj, item) => {
         obj[item.from] = obj[item.from] || [];
         obj[item.from].push({
           // from: item.from,
           amount: item.amount,
           txhash: item.txhash,
           height: item.height,
-          cybEstimation: null
+          cybEstimation: item.estimation
         });
         return obj;
       }, {});
@@ -187,33 +219,12 @@ class Funding extends PureComponent {
         amountСolumn: null,
         cyb: null
       }));
-      let temp = 0;
       for (let i = 0; i < groups.length; i++) {
         let sum = 0;
-        let estimation = 0;
         let sumEstimation = 0;
         for (let j = 0; j <= groups[i].address.length - 1; j++) {
-          const val = groups[i].address[j].amount;
-          const tempVal = temp + val;
           sum += groups[i].address[j].amount;
-          await this.getStatistics(data).then(statistics => {
-            estimation =
-              getEstimation(
-                statistics.currentPrice,
-                statistics.currentDiscount,
-                statistics.amount,
-                tempVal
-              ) -
-              getEstimation(
-                statistics.currentPrice,
-                statistics.currentDiscount,
-                statistics.amount,
-                temp
-              );
-          });
-          temp += val;
-          sumEstimation += estimation;
-          groups[i].address[j].cybEstimation = estimation;
+          sumEstimation += groups[i].address[j].cybEstimation;
         }
         groups[i].amountСolumn = sum;
         groups[i].cyb = sumEstimation;
@@ -251,11 +262,11 @@ class Funding extends PureComponent {
       dataPlot
     } = this.state;
     // console.log(groups);
-    console.log(dataPlot);
+    // console.log(dataPlot);
     return (
       <span>
         <main className="block-body">
-          {/* <span className="caption">Game of Links</span> */}
+          <span className="caption">Cyber~Funding</span>
           <Statistics
             atomLeff={formatNumber(atomLeff)}
             won={formatNumber(won)}
