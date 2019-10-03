@@ -81,10 +81,21 @@ class Row extends Component {
     // });
     return (
       <div>
-        {statePin && <button onClick={e => this.funcPin(pin)}>pin</button>}
-        {!statePin && unPin && <button onClick={e => this.funcUnPin(pin)}>unpin</button>}
-        <div onClick={this.open} className="table-rows-box">
-          {children}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center'
+          }}
+        >
+          {statePin && (
+            <button className="pin" onClick={e => this.funcPin(pin)} />
+          )}
+          {!statePin && unPin && (
+            <button className="unpin" onClick={e => this.funcUnPin(pin)} />
+          )}
+          <div onClick={this.open} className="table-rows-box">
+            {children}
+          </div>
         </div>
         <div className={`box ${open ? 'open' : 'close'}`}>{item}</div>
       </div>
@@ -98,7 +109,6 @@ export class Table extends Component {
     const data = [];
     const jsonStr = localStorage.getItem('allpin');
     data.push(JSON.parse(jsonStr));
-
     this.state = {
       pin: false,
       dataPinTable: data,
@@ -141,49 +151,53 @@ export class Table extends Component {
   render() {
     const { data } = this.props;
     const { pin, dataPinTable, loader } = this.state;
-    const tableRowPin = dataPinTable[0].map((itemGroup, index) => (
-      // console.log(itemGroup.value)
-      <Row
-        pin={itemGroup}
-        updateList={this.updateList}
-        key={itemGroup.value.group}
-        item={itemGroup.value.address.map((item, index) => (
-          <div className="table-rows-child" key={index}>
-            <div className="number hash">
-              <a href={`https://cyberd.ai/transactions/${item.txhash}`}>
-                {item.txhash}
-              </a>
-            </div>
-            <div className="number">{item.height}</div>
-            <div className="number">{formatNumber(item.amount)}</div>
-            <Tooltip
-              placement="bottom"
-              tooltip={`${formatNumber(Math.floor(item.cybEstimation))} CYBs`}
-            >
-              <div className="number">
-                {formatNumber(
-                  Math.floor((item.cybEstimation / Math.pow(10, 9)) * 1000) /
-                    1000
-                )}
+    const tableRowPin = () =>
+      dataPinTable[0].map((itemGroup, index) => (
+        // console.log(itemGroup.value)
+        <Row
+          pin={itemGroup}
+          updateList={this.updateList}
+          key={itemGroup.value.group}
+          item={itemGroup.value.address.map((item, index) => (
+            <div className="table-rows-child" key={index}>
+              <div className="number hash">
+                <a href={`https://cyberd.ai/transactions/${item.txhash}`}>
+                  {item.txhash}
+                </a>
               </div>
-            </Tooltip>
-          </div>
-        ))}
-      >
-        <div className="number address">{itemGroup.value.group}</div>
-        <div className="number">{formatNumber(itemGroup.value.amountСolumn)}</div>
-        <Tooltip
-          placement="bottom"
-          tooltip={`${formatNumber(Math.floor(itemGroup.value.cyb))} CYBs`}
+              <div className="number">{item.height}</div>
+              <div className="number">{formatNumber(item.amount)}</div>
+              <Tooltip
+                placement="bottom"
+                tooltip={`${formatNumber(Math.floor(item.cybEstimation))} CYBs`}
+              >
+                <div className="number">
+                  {formatNumber(
+                    Math.floor((item.cybEstimation / Math.pow(10, 9)) * 1000) /
+                      1000
+                  )}
+                </div>
+              </Tooltip>
+            </div>
+          ))}
         >
+          <div className="number address">{itemGroup.value.group}</div>
           <div className="number">
-            {formatNumber(
-              Math.floor((itemGroup.value.cyb / Math.pow(10, 9)) * 1000) / 1000
-            )}
+            {formatNumber(itemGroup.value.amountСolumn)}
           </div>
-        </Tooltip>
-      </Row>
-    ));
+          <Tooltip
+            placement="bottom"
+            tooltip={`${formatNumber(Math.floor(itemGroup.value.cyb))} CYBs`}
+          >
+            <div className="number">
+              {formatNumber(
+                Math.floor((itemGroup.value.cyb / Math.pow(10, 9)) * 1000) /
+                  1000
+              )}
+            </div>
+          </Tooltip>
+        </Row>
+      ));
 
     const tableRow = data.map((itemGroup, index) => (
       <Row
@@ -233,22 +247,6 @@ export class Table extends Component {
     }
     return (
       <div>
-        {pin && (
-          <div style={{ marginBottom: '50px' }}>
-            <div>pin</div>
-            <div className="table">
-              <div className="table-header-rows">
-                <div className="number address">Address (TX id)</div>
-                <div className="number">Height</div>
-                <div className="number">ATOMs</div>
-                <div className="number">GCYB estimation</div>
-              </div>
-
-              <div className="table-body">{tableRowPin}</div>
-            </div>
-          </div>
-        )}
-
         <div>table</div>
         <div className="table">
           <div className="table-header-rows">
@@ -257,7 +255,18 @@ export class Table extends Component {
             <div className="number">ATOMs</div>
             <div className="number">GCYB estimation</div>
           </div>
-
+          {pin && (
+            <div
+              className="table-body"
+              style={{
+                marginBottom: 20,
+                paddingBottom: 10,
+                borderBottom: '1px solid #fff6'
+              }}
+            >
+              {tableRowPin()}
+            </div>
+          )}
           <div className="table-body">{tableRow}</div>
         </div>
       </div>

@@ -1,34 +1,103 @@
 import React, { Component } from 'react';
+import TransportU2F from '@ledgerhq/hw-transport-u2f';
+import CosmosApp from 'ledger-cosmos-js';
+import { Loading } from '../../components/index';
+import { CosmosDelegateTool } from '../../utils/ledger';
+
+const ActionBarContainer = ({ height, children }) => (
+  <div className={`container-action ${height ? 'height50' : ''} `}>
+    {children}
+  </div>
+);
 
 const StartState = ({ onClickBtn, valueSelect, onChangeSelect }) => (
-  <div className="container-action">
+  <ActionBarContainer>
     <div className="container-action-content">
       <div className="action-text">
-        <span className="actionBar-text">Contribute ATOMs using</span>
-        <select value={valueSelect} onChange={onChangeSelect}>
+        <span className="actionBar-text">Contribute ATOMs</span>
+        {/* <select value={valueSelect} onChange={onChangeSelect}>
           <option value="address">Any cosmos wallet</option>
           <option value="ledger">Ledger</option>
-        </select>
+        </select> */}
       </div>
       <button className="btn" onClick={onClickBtn}>
         Fuck Google
       </button>
     </div>
-  </div>
+  </ActionBarContainer>
 );
 
-const SendAmount = ({ onClickBtn }) => (
-  <div className="container-action">
-    <div className="container-action-content">
-      <div className="action-text">
-        <span className="actionBar-text">
+const SendAmount = ({ onClickBtn, address }) => (
+  <div className="container-action height50 box-shadow-1px">
+    <div className="container-action-content height100">
+      <div className="container-send">
+        <div>
+          <div>
+            <span className="font-size-20 display-inline-block margin-bottom-10px">
+              Send any amount of ATOMs directly to cyber~Congress multisig by
+              your using Cosmos wallet
+            </span>
+            <div className="display-flex align-items-center">
+              <span className="font-size-16">{address}</span>
+              <button
+                className="copy-address"
+                onClick={() => {
+                  navigator.clipboard.writeText(address);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="line-action-bar" />
+        <div className="display-flex flex-direction-column align-items-center">
+          <div className="display-flex flex-direction-column">
+            {/* <span className="display-inline-block font-size-20 margin-bottom-10px">
+              Ledger
+            </span> */}
+            <button className="btn max-width-200px" onClick={onClickBtn}>
+              Send with Ledger
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* <span className="actionBar-text">
           You can send any amount of ATOMs to cyber•Congress multisig
           cosmos287fhhlgflsef
         </span>
       </div>
       <button className="btn" onClick={onClickBtn}>
         Track Contribution
-      </button>
+      </button> */}
+    </div>
+  </div>
+);
+
+const SendAmounLadger = ({ onClickBtn, status }) => (
+  <div className="container-action height50 box-shadow-1px">
+    <div className="container-action-content height100">
+      <div className="display-flex flex-direction-column">
+        <span className="font-size-20 display-inline-block margin-bottom-10px">
+          Let's get started
+        </span>
+
+        <div className="display-flex flex-direction-column">
+          <div>
+            {status.pin && <div>1</div>}
+            <span className="font-size-20 display-inline-block margin-bottom-10px">
+              Connect
+            </span>
+          </div>
+          <div>
+            {/* <input type="checkbox" checked="checked" /> */}
+            {status.app && <div>2</div>}
+            <span className="font-size-20 display-inline-block margin-bottom-10px">
+              Open app
+            </span>
+          </div>
+        </div>
+        {/* <Loading /> */}
+        <button onClick={onClickBtn}>1</button>
+      </div>
     </div>
   </div>
 );
@@ -96,8 +165,27 @@ export class ActionBar extends Component {
     super(props);
     this.state = {
       valueSelect: 'address',
-      step: 'start'
+      step: 'SendAmounLadger',
+      height50: false,
+      sendAddress: 'cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8',
+      connect: {
+        pin: false,
+        app: false
+      }
     };
+  }
+
+  async tryConnect() {
+    let transport = null;
+    try {
+      transport = await TransportU2F.create(10000);
+    } catch (e) {
+      console.log(e);
+      return;
+    }
+    const ledger = new CosmosDelegateTool(transport);
+    const connect = await ledger.connect();
+    return connect;
   }
 
   onChangeSelect = e =>
@@ -106,35 +194,39 @@ export class ActionBar extends Component {
     });
 
   onClickFuckGoogle = () => {
-    const { valueSelect } = this.state;
-
-    switch (valueSelect) {
-      case 'address':
-        this.setState({
-          step: 'sendAmount'
-        });
-        break;
-      case 'ledger':
-        this.setState({
-          step: 'contributeATOMs'
-        });
-        break;
-      default:
-        this.setState({
-          step: 'start'
-        });
-    }
+    this.setState({
+      step: 'sendAmount',
+      height50: true
+    });
   };
 
-  onClickTrackContribution = () =>
+  onClickTrackContribution = () => {
     this.setState({
-      step: 'putAddress'
+      step: 'SendAmounLadger'
     });
 
-  onClickSaveAddress = () =>
-    this.setState({
-      step: 'start'
+    this.tryConnect().then(connect => {
+      console.log('connect status', connect);
+      this.setState({
+        connect
+      });
+      // if (connect === undefined) {
+      //   this.onClickTrackContribution();
+      // }
     });
+  };
+
+  onClickSaveAddress = () => {
+    this.tryConnect().then(connect => {
+      // console.log('connect status', connect);
+      this.setState({
+        connect
+      });
+      if (connect === undefined) {
+        this.onClickSaveAddress();
+      }
+    });
+  };
 
   onClickContributeATOMs = () =>
     this.setState({
@@ -147,8 +239,7 @@ export class ActionBar extends Component {
     });
 
   render() {
-    const { valueSelect, step } = this.state;
-
+    const { valueSelect, step, height50, sendAddress, connect } = this.state;
     if (step === 'start') {
       return (
         <StartState
@@ -160,11 +251,23 @@ export class ActionBar extends Component {
     }
 
     if (step === 'sendAmount') {
-      return <SendAmount onClickBtn={this.onClickTrackContribution} />;
+      return (
+        <SendAmount
+          height={height50}
+          onClickBtn={this.onClickTrackContribution}
+          address={sendAddress}
+        />
+      );
     }
 
-    if (step === 'putAddress') {
-      return <PutAddress onClickBtn={this.onClickSaveAddress} />;
+    if (step === 'SendAmounLadger') {
+      return (
+        <SendAmounLadger
+          onClickBtn={this.onClickSaveAddress}
+          status={connect}
+          address={sendAddress}
+        />
+      );
     }
 
     if (step === 'contributeATOMs') {

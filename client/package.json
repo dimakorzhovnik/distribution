@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack-dev-server -d",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --https -d",
     "build": "cross-env NODE_ENV=production webpack -p",
     "lint": "eslint src/"
   },
@@ -18,8 +18,11 @@
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.2.0",
     "@babel/preset-react": "^7.0.0",
+    "@ledgerhq/hw-transport-u2f": "^4.70.2",
+    "axios": "^0.19.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
+    "big.js": "^5.2.2",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.1",
     "eslint": "^5.9.0",
@@ -42,6 +45,7 @@
     "react-plotly.js": "^2.3.0",
     "react-popper-tooltip": "^2.8.3",
     "react-router": "^5.0.1",
+    "secp256k1": "^3.7.1",
     "style-loader": "^0.23.1",
     "url-loader": "^2.1.0",
     "webpack": "^4.27.0",
@@ -49,6 +53,7 @@
     "webpack-dev-server": "^3.1.5"
   },
   "dependencies": {
+    "ledger-cosmos-js": "^2.0.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "web3": "1.0.0-beta.34"
