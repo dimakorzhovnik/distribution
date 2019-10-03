@@ -321,12 +321,12 @@ span.right-input {
     bottom: 0;
     background-color: #000;
     z-index: 1;
-    top: 92%;
-    transition: top  2s;
+    min-height: 5%;
+    transition: min-height 2s;
 }
 
 .container-action.height50 {
-    top: 50%;
+    min-height: 50%;
 }
 
 .container-action-content {
@@ -708,4 +708,8 @@ select {
 
 .margin-right-5px {
     margin-right: 5px;
+}
+
+.text-align-center {
+    text-align: center;
 }

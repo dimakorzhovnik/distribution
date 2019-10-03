@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import TransportU2F from '@ledgerhq/hw-transport-u2f';
 import { Loading } from '../../components/index';
 import { CosmosDelegateTool } from '../../utils/ledger';
+import { ContributeATOMs } from './stateActionBar';
 
 const HDPATH = [44, 118, 0, 0, 0];
 const TIMEOUT = 5000;
@@ -45,7 +46,10 @@ const ActionBarContainer = ({ height, children }) => (
 );
 
 function formatAtom(amount, dp) {
-  return formatDenomination(amount, dp, "ATOM", "ATOMs");
+  console.log(amount);
+  console.log(dp);
+  return amount;
+  // return formatDenomination(amount, dp, "ATOM", "ATOMs");
 }
 
 const StartState = ({ onClickBtn, valueSelect, onChangeSelect }) => (
@@ -210,20 +214,26 @@ const PutAddress = ({ onClickBtn }) => (
   </div>
 );
 
-const ContributeATOMs = ({ onClickBtn }) => (
-  <div className="container-action">
-    <div className="container-action-content">
-      <div className="action-text">
-        <span className="actionBar-text">
-          I want contribute <input /> ATOMs
-        </span>
-      </div>
-      <button className="btn" onClick={onClickBtn}>
-        Confirm
-      </button>
-    </div>
-  </div>
-);
+// const ContributeATOMs = ({ onClickBtn, address, availableStake, canStake }) => (
+//   <div className="container-action">
+//     <div className="container-action-content">
+//       <div className="action-text">
+//         <span className="actionBar-text">
+//          {address}
+//         </span>
+//         <span className="actionBar-text">
+//          {availableStake}
+//         </span>
+//         <span className="actionBar-text">
+//          {canStake}
+//         </span>
+//       </div>
+//       <button className="btn" onClick={onClickBtn}>
+//         Confirm
+//       </button>
+//     </div>
+//   </div>
+// );
 
 const TransactionCost = ({ onClickBtn }) => (
   <div className="container-action">
@@ -488,6 +498,15 @@ export class ActionBar extends Component {
     return this.state.addressInfo !== null;
   }
 
+  // copyToClipboard() {
+  //   this.state.textAreaRef.current.select();
+  //   document.execCommand("copy");
+  //   this.setState({ clipboardCopySuccess: true });
+  //   setTimeout(() => {
+  //     this.setState({ clipboardCopySuccess: false });
+  //   }, 2000);
+  // }
+
   render() {
     const {
       valueSelect,
@@ -501,13 +520,17 @@ export class ActionBar extends Component {
       version,
       availableStake,
       canStake,
-      address
+      address,
+      gasPrice,
+      gas
     } = this.state;
-    console.log('availableStake',
-    formatAtom(
-      this.state.availableStake / DIVISOR,
-      this.state.availableStake > DIVISOR ? 6 : 3,
-    ));
+    console.log(
+      'availableStake',
+      formatAtom(
+        this.state.availableStake / DIVISOR,
+        this.state.availableStake > DIVISOR ? 6 : 3
+      )
+    );
     console.log('canStake', canStake);
     console.log('address', address);
     // console.log('ledger', ledger);
@@ -550,13 +573,25 @@ export class ActionBar extends Component {
     }
 
     if (this.state.stage === STAGE_READY && this.hasKey() && this.hasWallet()) {
+      // if (this.state.stage === STAGE_READY) {
       return (
         <ContributeATOMs
           onClickBtn={this.onClickContributeATOMs}
           address={address}
-          availableStake={availableStake}
-          canStake={canStake}
+          availableStake={Math.floor((availableStake / DIVISOR) * 1000) / 1000}
+          canStake={Math.floor((canStake / DIVISOR) * 1000) / 1000}
+          gasUAtom={gas * gasPrice}
+          gasAtom={(gas * gasPrice) / DIVISOR}
         />
+        //   <ContributeATOMs
+        //     onClickBtn={this.onClickContributeATOMs}
+        //     address='cosmos1gw5kdey7fs9wdh05w66s0h4s24tjdvtcxlwll7'
+        //     availableStake={Math.floor(0.05851 * 1000) / 1000}
+        //     canStake={Math.floor(0.05701 * 1000) / 1000}
+        //     valueInput={Math.floor(0.05701 * 1000) / 1000}
+        //     gasUAtom={gas * gasPrice}
+        //     gasAtom={(gas * gasPrice) / DIVISOR}
+        // />
       );
     }
 
