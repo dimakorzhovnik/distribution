@@ -52,7 +52,7 @@ class CosmosDelegateTool {
     this.checkAppInfo = false;
     this.transportDebug = false;
     this.transport = transport;
-    this.resturl = null;
+    this.resturl = 'https://api.chorus.one';
     this.requiredVersionMajor = 1;
     this.requiredVersionMinor = 1;
   }
@@ -66,6 +66,10 @@ class CosmosDelegateTool {
   async connect() {
     this.connected = false;
     this.lastError = null;
+    const connectedLog = {
+      pin: false,
+      app: false
+    };
     this.app = new CosmosApp(this.transport);
     if (this.checkAppInfo) {
       const appInfo = await this.app.appInfo();
@@ -82,11 +86,15 @@ class CosmosDelegateTool {
       }
     }
     const version = await this.app.getVersion();
-    console.log(version);
+    if (version.return_code === 28160) {
+        return version;
+    }
+
     if (version.error_message !== 'No errors') {
-    //   console.log(`Error [${version.error_message}] ${version.error_message}`);
+      console.log(`Error [${version.error_message}] ${version.error_message}`);
       return;
     }
+    
     if (version.return_code !== 0x9000) {
       this.lastError = version.error_message;
       throw new Error(version.error_message);
@@ -103,8 +111,10 @@ class CosmosDelegateTool {
 
     // Mark as connected
     this.connected = true;
-
-    return this.connected;
+    connectedLog.pin = true;
+    connectedLog.app = true;
+    console.log(connectedLog);
+    return version;
   }
 
   // Returns a signed transaction ready to be relayed
@@ -175,7 +185,7 @@ class CosmosDelegateTool {
   }
 
   async getAccountInfo(addr) {
-    const url = `${nodeURL(this)}/auth/accounts/${addr.bech32}`;
+    const url = `${nodeURL(this)}/api/cosmos/account/${addr}`;
     const txContext = {
       sequence: '0',
       accountNumber: '0',

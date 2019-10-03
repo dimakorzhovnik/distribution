@@ -603,6 +603,43 @@ select {
     }
 }
 
+.checkbox {
+    width: 15px;
+    height: 15px;
+    background: #000;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 1px #3ab793;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkbox.checked::after {
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 9px;
+    background-color: #3ab793;
+    border-radius: 50%;
+}
+
+.ledger-img{
+    display: block;
+    margin: 25px auto;
+}
+
+
+.container-action-content-ledger{
+    width: initial;
+    padding: 0 20px;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 /* --------- */
 
 .height100 {
@@ -667,4 +704,8 @@ select {
 
 .margin-bottom-10px {
     margin-bottom: 10px;
+}
+
+.margin-right-5px {
+    margin-right: 5px;
 }
