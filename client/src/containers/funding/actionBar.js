@@ -11,7 +11,7 @@ const DEFAULT_GAS = 150000;
 const DEFAULT_GAS_PRICE = 0.01;
 const DENOM = 'uatom';
 const MEMO = 'Stake online with Chorus One at https://chorus.one';
-const OPERATOR_ADDR = 'cosmosvaloper15urq2dtp9qce4fyc85m6upwm9xul3049e02707';
+const OPERATOR_ADDR = 'cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8';
 const CHAIN_ID = 'cosmoshub-2';
 
 const STAGE_INIT = 0;
@@ -25,8 +25,8 @@ const STAGE_CONFIRMING = 7;
 const STAGE_CONFIRMED = 8;
 const STAGE_ERROR = 15;
 
-// const API_ROOT = "http://localhost:5000/"
-const API_ROOT = 'https://api.chorus.one/';
+const API_ROOT = 'https://moon.cybernode.ai';
+// const API_ROOT = 'https://api.chorus.one/';
 
 export const TXTYPE_DELEGATE = 0;
 export const TXTYPE_REDELEGATE = 1;
@@ -277,7 +277,7 @@ export class ActionBar extends Component {
       time: 0,
       gas: DEFAULT_GAS,
       gasPrice: DEFAULT_GAS_PRICE,
-      toStake: 0,
+      toSend: '',
       canStake: 0,
       atomerror: null,
       errorMessage: null,
@@ -346,17 +346,17 @@ export class ActionBar extends Component {
   getVersion = async () => {
     try {
       const connect = await this.state.ledger.connect();
-      // console.log(connect.return_code);
+      console.log(connect);
       if (
         this.state.returnCode === null ||
         connect.return_code !== this.state.returnCode
       ) {
         this.setState({
-          // txMsg: null,
-          // address: null,
-          // requestMetaData: null,STAGE_READY
-          // txBody: null,
-          // errorMessage: null,
+          txMsg: null,
+          address: null,
+          requestMetaData: null,
+          txBody: null,
+          errorMessage: null,
           returnCode: connect.return_code,
           version_info: [connect.major, connect.minor, connect.patch]
         });
@@ -379,13 +379,13 @@ export class ActionBar extends Component {
   getAddress = async () => {
     // try {
     const address = await this.state.ledger.retrieveAddress(0, 0);
-    // console.log('address', address.bech32);
+    console.log('address', address);
     // eslint-disable-next-line
         // const pk = (await this.state.ledger.publicKey(HDPATH)).pk;
     this.setState({
       // eslint-disable-next-line
             // cpk: this.state.ledger.compressPublicKey(pk),
-      address: address.bech32
+      address
     });
     // } catch (error) {
     //   const { message, statusCode } = error;
@@ -399,10 +399,22 @@ export class ActionBar extends Component {
   };
 
   getWallet = async () => {
-    const addressInfo = await this.state.ledger.getAccountInfo(
-      this.state.address
+    // const addressInfo = await this.state.ledger.getAccountInfo(
+    //   this.state.address
+    // );
+    const addressInfo = await fetch(
+      `${API_ROOT}/api/account?address="${this.state.address.bech32}"`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }
     );
-
+    const data = await addressInfo.json();
+    // console.log('addressInfo', data);
+    // console.log('data', data.result.account.coins[0].amount);
     switch (this.state.txType) {
       case TXTYPE_WITHDRAW:
         this.getRewards();
@@ -415,15 +427,136 @@ export class ActionBar extends Component {
     }
 
     this.setState(prevState => ({
-      addressInfo,
-      availableStake: parseFloat(addressInfo.balanceuAtom),
+      addressInfo: data,
+      availableStake: parseFloat(data.result.account.coins[0].amount),
       canStake:
-        parseFloat(addressInfo.balanceuAtom) -
+        parseFloat(data.result.account.coins[0].amount) -
         prevState.gas * prevState.gasPrice,
       stage: STAGE_READY
     }));
 
-    console.log('addressInfo', addressInfo);
+    // console.log('addressInfo', addressInfo);
+  };
+
+  generateTx = async () => {
+    const { ledger, address } = this.state;
+    const validatorBech32 = OPERATOR_ADDR;
+    const uatomAmount = this.state.toSend * DIVISOR;
+    const getAccountInfo = await ledger.getAccountInfo(address.bech32);
+    const txContext = {
+      accountNumber: address.accountNumber,
+      balanceuAtom: getAccountInfo.balanceuAtom,
+      chainId: getAccountInfo.chainId,
+      sequence: address.sequence,
+      bech32: address.bech32,
+      pk: address.pk,
+      path: address.path
+    };
+    const tx = await ledger.txCreateSend(
+      txContext,
+      validatorBech32,
+      uatomAmount,
+      MEMO
+    );
+    console.log('tx', tx);
+
+    const sing = await ledger.sign(tx, txContext);
+    console.log('sing', sing);
+    const txSubmit = await ledger.txSubmit(sing);
+    console.log(txSubmit);
+    // if (
+    //   (this.state.gas > DEFAULT_GAS * 2 &&
+    //     this.state.txType !== TXTYPE_WITHDRAW) ||
+    //   (this.state.gasPrice > DEFAULT_GAS_PRICE * 2 && DEFAULT_GAS_PRICE > 0)
+    // ) {
+    //   // if gas > 2x default (unless it withdraw and we are withdrawing from multiple validators)
+    //   // if gasPrice > 2x default (unless default is 0, bvecause 2*0 is still 0!)
+    //   this.state.errorMessage =
+    //     'You gas price seems excessive! Please adjust to more sane values.';
+    //   return;
+    // }
+
+    // const defaultTx = {
+    //   fee: {
+    //     amount: [
+    //       {
+    //         denom: DENOM,
+    //         amount: String(this.state.gas * this.state.gasPrice)
+    //       }
+    //     ],
+    //     gas: String(this.state.gas)
+    //   },
+    //   signatures: null,
+    //   memo: MEMO
+    // };
+    // const txMsg = defaultTx;
+    // txMsg.msg = [
+    //   {
+    //     type: "cosmos-sdk/MsgSend",
+    //     value: {
+    //       delegator_address: this.state.address,
+    //       validator_address: OPERATOR_ADDR,
+    //       amount: { denom: DENOM, amount: String(this.state.toSend * DIVISOR)},
+    //     },
+    //   },
+    // ];
+
+    // await this.setState(prevState => ({
+    //   txMsg,
+    //   requestMetaData: {
+    //     sequence: String(prevState.addressInfo.sequence),
+    //     from: prevState.address,
+    //     account_number: String(prevState.addressInfo.account_number),
+    //     chain_id: CHAIN_ID,
+    //     fees: String(prevState.gas * prevState.gasPrice),
+    //     generate_only: false
+    //   },
+    //   txBody: null,
+    //   error: null
+    // }));
+    // await this.signTx();
+    // if (this.state.txBody !== null) {
+    //   this.setState({ txMsg: null, stage: STAGE_SUBMITTED });
+    //   await this.injectTx();
+    // }
+  };
+
+  signTx = async () => {
+    const sing = await this.state.ledger.sign(HDPATH, this.state.txMsg);
+    console.log(sing);
+    // const signMessage = wallet.createSignMessage(
+    //   this.state.txMsg,
+    //   this.state.requestMetaData,
+    // );
+    // try {
+    //   this.setState({ stage: STAGE_WAIT });
+    //   const pubKeyBuffer = Buffer.from(this.state.cpk, "hex");
+    //   const ledgerSignature = await this.state.ledger.sign(HDPATH, signMessage);
+
+    //   // eslint-disable-next-line
+    //   console.log("ledger signature code", ledgerSignature.return_code);
+    //   if (ledgerSignature.return_code === LEDGER_OK) {
+    //     const signature = wallet.createSignature(
+    //       signatureImport(ledgerSignature.signature),
+    //       this.state.addressInfo.sequence,
+    //       this.state.addressInfo.account_number,
+    //       pubKeyBuffer,
+    //     );
+    //     const signedTx = wallet.createSignedTx(this.state.txMsg, signature);
+    //     const body = wallet.createBroadcastBody(signedTx);
+    //     this.setState({ txBody: body, stage: STAGE_GENERATED });
+    //   } else {
+    //     // eslint-disable-next-line
+    //     console.error(ledgerSignature.error_message);
+    //     this.setState({
+    //       errorMessage: ledgerSignature.error_message,
+    //       txBody: null,
+    //     });
+    //   }
+    // } catch ({ message, statusCode }) {
+    //   // eslint-disable-next-line
+    //   console.error("Error signing transaction", message, statusCode);
+    // }
   };
 
   tryConnect = async () => {
@@ -480,6 +613,12 @@ export class ActionBar extends Component {
     });
   };
 
+  onChangeInputContributeATOMs = async e => {
+    this.setState({
+      toSend: e.target.value
+    });
+  };
+
   onClickContributeATOMs = () =>
     this.setState({
       step: 'transactionCost'
@@ -522,20 +661,24 @@ export class ActionBar extends Component {
       canStake,
       address,
       gasPrice,
-      gas
+      gas,
+      toSend,
+      txMsg
     } = this.state;
-    console.log(
-      'availableStake',
-      formatAtom(
-        this.state.availableStake / DIVISOR,
-        this.state.availableStake > DIVISOR ? 6 : 3
-      )
-    );
-    console.log('canStake', canStake);
-    console.log('address', address);
-    // console.log('ledger', ledger);
+    // console.log(
+    //   'availableStake',
+    //   formatAtom(
+    //     this.state.availableStake / DIVISOR,
+    //     this.state.availableStake > DIVISOR ? 6 : 3
+    //   )
+    // );
+    // console.log('canStake', canStake);
+    // console.log('address', address);
+    // console.log('toSend', toSend);
     // console.log('returnCode', returnCode);
     // console.log('version_info', version_info);
+    // console.log(JSON.stringify(txMsg, null, 2));
+
     if (step === 'start') {
       return (
         <StartState
@@ -576,12 +719,14 @@ export class ActionBar extends Component {
       // if (this.state.stage === STAGE_READY) {
       return (
         <ContributeATOMs
-          onClickBtn={this.onClickContributeATOMs}
-          address={address}
+          onClickBtn={() => this.generateTx()}
+          address={address.bech32}
           availableStake={Math.floor((availableStake / DIVISOR) * 1000) / 1000}
           canStake={Math.floor((canStake / DIVISOR) * 1000) / 1000}
           gasUAtom={gas * gasPrice}
           gasAtom={(gas * gasPrice) / DIVISOR}
+          onChangeInput={e => this.onChangeInputContributeATOMs(e)}
+          valueInput={toSend}
         />
         //   <ContributeATOMs
         //     onClickBtn={this.onClickContributeATOMs}

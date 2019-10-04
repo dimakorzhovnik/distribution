@@ -8,7 +8,8 @@ export const ContributeATOMs = ({
   canStake,
   valueInput,
   gasUAtom,
-  gasAtom
+  gasAtom,
+  onChangeInput
 }) => (
   <ContainetLedger>
     <div className="display-flex align-items-center">
@@ -26,10 +27,14 @@ export const ContributeATOMs = ({
         <p className="text-align-center">Your wallet contains:</p>
         <span className="actionBar-text">{availableStake}</span>
         <div style={{ marginTop: '25px', marginBottom: 10 }}>
-          Enter the amount of ATOMs you wish to delegate to Chorus One:
+          Enter the amount of ATOMs you wish to send to Cyber~Congress:
         </div>
         <div className="text-align-center">
-          <input value={valueInput} style={{ marginRight: 10 }} />
+          <input
+            value={valueInput}
+            style={{ marginRight: 10 }}
+            onChange={onChangeInput}
+          />
           <button className="btn" onClick={onClickBtn} style={{ height: 30 }}>
             Confirm
           </button>

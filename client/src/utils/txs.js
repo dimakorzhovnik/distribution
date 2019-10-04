@@ -14,7 +14,7 @@
  *  limitations under the License.
  ******************************************************************************* */
 
-const DEFAULT_DENOM = 'uatom';
+const DEFAULT_DENOM = "cyb";
 const DEFAULT_GAS = 200000;
 const DEFAULT_GAS_PRICE = 0.025;
 const DEFAULT_MEMO = '';
@@ -173,6 +173,27 @@ function createDelegate(txContext, validatorBech32, uatomAmount, memo) {
   return txSkeleton;
 }
 
+function createSend(txContext, validatorBech32, uatomAmount, memo) {
+  const txSkeleton = createSkeleton(txContext);
+
+  const txMsg = {
+    type: 'cosmos-sdk/MsgSend',
+    value: {
+      amount: {
+        amount: uatomAmount.toString(),
+        denom: DEFAULT_DENOM
+      },
+      delegator_address: txContext.bech32,
+      validator_address: validatorBech32
+    }
+  };
+
+  txSkeleton.value.msg = [txMsg];
+  txSkeleton.value.memo = memo || '';
+
+  return txSkeleton;
+}
+
 // Creates a new undelegation tx based on the input parameters
 // the function expects a complete txContext
 function createUndelegate(txContext, validatorBech32, uatomAmount, memo) {
@@ -233,5 +254,6 @@ export default {
   createRedelegate,
   createUndelegate,
   getBytesToSign,
-  applySignature
+  applySignature,
+  createSend
 };
