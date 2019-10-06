@@ -14,10 +14,12 @@
  *  limitations under the License.
  ******************************************************************************* */
 
-const DEFAULT_DENOM = "cyb";
-const DEFAULT_GAS = 200000;
-const DEFAULT_GAS_PRICE = 0.025;
+const DEFAULT_DENOM = 'uatom';
+// const DEFAULT_GAS = 200000;
+// const DEFAULT_GAS_PRICE = 0.025;
 const DEFAULT_MEMO = '';
+const DEFAULT_GAS = 150000;
+const DEFAULT_GAS_PRICE = 0.01;
 
 function canonicalizeJson(jsonTx) {
   if (Array.isArray(jsonTx)) {
@@ -73,11 +75,12 @@ function applyGas(unsignedTx, gas) {
 
   // eslint-disable-next-line no-param-reassign
   unsignedTx.value.fee = {
-    // amount: [{
-    //     amount: (gas * DEFAULT_GAS_PRICE).toString(),
-    //     denom: DEFAULT_DENOM,
-    // }],
-    amount: [],
+    amount: [
+      {
+        amount: (gas * DEFAULT_GAS_PRICE).toString(),
+        denom: DEFAULT_DENOM
+      }
+    ],
     gas: gas.toString()
   };
 
@@ -179,12 +182,14 @@ function createSend(txContext, validatorBech32, uatomAmount, memo) {
   const txMsg = {
     type: 'cosmos-sdk/MsgSend',
     value: {
-      amount: {
-        amount: uatomAmount.toString(),
-        denom: DEFAULT_DENOM
-      },
-      delegator_address: txContext.bech32,
-      validator_address: validatorBech32
+      amount: [
+        {
+          amount: uatomAmount.toString(),
+          denom: DEFAULT_DENOM
+        }
+      ],
+      from_address: txContext.bech32,
+      to_address: validatorBech32
     }
   };
 

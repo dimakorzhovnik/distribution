@@ -322,6 +322,7 @@ span.right-input {
     background-color: #000;
     z-index: 1;
     min-height: 5%;
+    height: 1%;
     transition: min-height 2s;
 }
 
@@ -627,6 +628,23 @@ select {
 .ledger-img{
     display: block;
     margin: 25px auto;
+    height: 15%;
+}
+
+.container-json{
+    padding-bottom: 15px;
+    height: 65%;
+}
+
+.container-json pre {
+    overflow: auto;
+    height: 100%;
+    background-color: #000 !important;
+    color: #3ab793 !important;
+}
+
+.hljs-attr {
+    color: #fff !important;
 }
 
 
@@ -638,6 +656,7 @@ select {
     justify-content: center;
     max-width: 1000px;
     margin: 0 auto;
+    height: 100%;
 }
 
 /* --------- */
