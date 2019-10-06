@@ -80,10 +80,27 @@ export const JsonTransaction = ({ txMsg }) => (
 
 export const TransactionSubmitted = () => (
   <ContainetLedger>
-    <h3>Transaction submitted</h3>
-    <div style={{ marginTop: '35px' }}>
-      Please wait while we confirm the transaction on the blockchain. This might
-      take a few moments depending on the transaction fees used.
+    <span className="font-size-20 display-inline-block text-align-center">
+      Transaction submitted
+    </span>
+    <div
+      style={{
+        marginTop: '35px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
+      <span
+        style={{
+          marginBottom: '20px',
+          maxWidth: '70%',
+          fontSize: '16px'
+        }}
+      >
+        Please wait while we confirm the transaction on the blockchain. This
+        might take a few moments depending on the transaction fees used.
+      </span>
       <Loading />
     </div>
   </ContainetLedger>
@@ -91,28 +108,54 @@ export const TransactionSubmitted = () => (
 
 export const Confirmed = ({ txHash, txHeight, onClickBtn }) => (
   <ContainetLedger>
-    <span className="font-size-20 display-inline-block">Transaction Confirmed!</span>
-    <div style={{ marginTop: '25px' }}>
-      <p style={{ marginBottom: 20 }}>
-        Your transaction was included in the block at height: 2082432 {txHeight}
+    <span className="font-size-20 display-inline-block text-align-center">
+      Transaction Confirmed!
+    </span>
+    <div
+      style={{ marginTop: '25px' }}
+      className="display-flex flex-direction-column"
+    >
+      <p style={{ marginBottom: 20, textAlign: 'center' }}>
+        Your transaction was included in the block at height:{' '}
+        <span
+          style={{
+            color: '#3ab793',
+            marginLeft: '5px'
+          }}
+        >
+          {txHeight}
+        </span>
       </p>
-      
+
       <a
         target="_blank"
         rel="noopener noreferrer"
         className="btn"
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: '0 auto'
+        }}
         href={`https://www.mintscan.io/txs/${txHash}`}
       >
         View transaction
       </a>
-      <span style={{ marginTop: '25px' }}>Transaction Hash: 2D9B7F00932DA2A33FE941D534AA1186EB98978967B2B8B4A5034D84E57DC69E {txHash}</span>
-      <p>Thank you for using Chorus One!</p>
       <div style={{ marginTop: '25px' }}>
-        <button
-          type="button"
-          className="btn"
-          onClick={onClickBtn}
+        <span>Transaction Hash:</span>
+        <span
+          style={{
+            fontSize: '12px',
+            color: '#3ab793',
+            marginLeft: '5px'
+          }}
         >
+          {txHash}
+        </span>
+      </div>
+
+      <div style={{ marginTop: '25px', textAlign: 'center' }}>
+        <button type="button" className="btn" onClick={onClickBtn}>
           Continue
         </button>
       </div>

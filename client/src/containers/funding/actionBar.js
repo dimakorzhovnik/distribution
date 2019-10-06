@@ -351,10 +351,25 @@ export class ActionBar extends Component {
     this.setState({
       stage: STAGE_INIT,
       height50: false,
+      ledger: null,
+      ledgerVersion: [0, 0, 0],
+      returnCode: null,
+      addressInfo: null,
+      address: null,
+      availableStake: 0,
+      gas: DEFAULT_GAS,
+      gasPrice: DEFAULT_GAS_PRICE,
+      toSend: '',
+      canStake: 0,
+      atomerror: null,
+      errorMessage: null,
+      rewards: [],
+      governance: [],
       txBody: null,
       txContext: null,
       txHash: null,
-      txHeight: null
+      txHeight: null,
+      clipboardCopySuccess: false,
     });
   };
 
@@ -450,15 +465,15 @@ export class ActionBar extends Component {
       txHeight
     } = this.state;
 
-    // if (this.state.stage === STAGE_INIT) {
-    //   return (
-    //     <StartState
-    //       onClickBtn={this.onClickFuckGoogle}
-    //       valueSelect={valueSelect}
-    //       onChangeSelect={this.onChangeSelect}
-    //     />
-    //   );
-    // }
+    if (this.state.stage === STAGE_INIT) {
+      return (
+        <StartState
+          onClickBtn={this.onClickFuckGoogle}
+          valueSelect={valueSelect}
+          onChangeSelect={this.onChangeSelect}
+        />
+      );
+    }
 
     if (this.state.stage === STAGE_SELECTION) {
       return (
@@ -522,7 +537,7 @@ export class ActionBar extends Component {
       return <TransactionSubmitted />;
     }
 
-    if (this.state.stage === STAGE_INIT) {
+    if (this.state.stage === STAGE_CONFIRMED) {
       return (
         <Confirmed
           txHash={txHash}
