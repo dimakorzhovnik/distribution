@@ -335,6 +335,33 @@ export class ActionBar extends Component {
     return connect;
   };
 
+  cleatState = () => {
+    this.setState({
+      ledger: null,
+      ledgerVersion: [0, 0, 0],
+      returnCode: null,
+      addressInfo: null,
+      address: null,
+      availableStake: 0,
+      time: 0,
+      gas: DEFAULT_GAS,
+      gasPrice: DEFAULT_GAS_PRICE,
+      toSend: '',
+      canStake: 0,
+      atomerror: null,
+      errorMessage: null,
+      rewards: [],
+      governance: [],
+      txBody: null,
+      txContext: null,
+      txHash: null,
+      txHeight: null,
+      textAreaRef: React.createRef(),
+      clipboardCopySuccess: false,
+      height50: false
+    });
+  };
+
   onChangeSelect = e =>
     this.setState({
       valueSelect: e.target.value
@@ -348,28 +375,9 @@ export class ActionBar extends Component {
   };
 
   onClickInitStage = () => {
+    this.cleatState();
     this.setState({
-      stage: STAGE_INIT,
-      height50: false,
-      ledger: null,
-      ledgerVersion: [0, 0, 0],
-      returnCode: null,
-      addressInfo: null,
-      address: null,
-      availableStake: 0,
-      gas: DEFAULT_GAS,
-      gasPrice: DEFAULT_GAS_PRICE,
-      toSend: '',
-      canStake: 0,
-      atomerror: null,
-      errorMessage: null,
-      rewards: [],
-      governance: [],
-      txBody: null,
-      txContext: null,
-      txHash: null,
-      txHeight: null,
-      clipboardCopySuccess: false,
+      stage: STAGE_INIT
     });
   };
 
