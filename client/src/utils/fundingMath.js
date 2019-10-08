@@ -88,4 +88,17 @@ const cybWon = atom => {
   return won;
 };
 
-export { cybWon, funcDiscount, getEstimation, getShares, getDataPlot };
+const getRewards = (price, discount, atoms, amount) => {
+  const rewards =
+    price + (price * discount) / 2 - ((price * discount) / atoms) * amount;
+  return rewards;
+};
+
+export {
+  cybWon,
+  funcDiscount,
+  getEstimation,
+  getShares,
+  getDataPlot,
+  getRewards
+};

@@ -112,7 +112,10 @@ export class Table extends Component {
     this.state = {
       pin: false,
       dataPinTable: data,
-      loader: false
+      loader: false,
+      sortAtom: false,
+      sortSyb: false,
+      asc: false
     };
   }
 
@@ -132,6 +135,33 @@ export class Table extends Component {
     });
   };
 
+  sortAtom = () => {
+    this.setState({
+      sortAtom: true,
+      sortSyb: false,
+      asc: !this.state.asc
+    });
+  };
+
+  sortCyb = () => {
+    this.setState({
+      sortAtom: false,
+      sortSyb: true,
+      asc: !this.state.asc
+    });
+  };
+  // getCellValue = (tr, idx) =>
+  //   tr.children[idx].innerText || tr.children[idx].textContent;
+
+  // comparer = (idx, asc) => (a, b) =>
+  //   ((v1, v2) =>
+  //     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)
+  //       ? v1 - v2
+  //       : v1.toString().localeCompare(v2))(
+  //     this.getCellValue(asc ? a : b, idx),
+  //     this.getCellValue(asc ? b : a, idx)
+  //   );
+
   componentDidMount() {
     const dataPin = [];
     const jsonStr = localStorage.getItem('allpin');
@@ -150,7 +180,21 @@ export class Table extends Component {
 
   render() {
     const { data } = this.props;
-    const { pin, dataPinTable, loader } = this.state;
+    const { pin, dataPinTable, loader, sortSyb, sortAtom, asc } = this.state;
+    if (sortSyb) {
+      data.sort((a, b) => {
+        const x = a.cyb;
+        const y = b.cyb;
+        return asc ? x - y : y - x;
+      });
+    }
+    if (sortAtom) {
+      data.sort((a, b) => {
+        const x = a.amountСolumn;
+        const y = b.amountСolumn;
+        return asc ? x - y : y - x;
+      });
+    }
     const tableRowPin = () =>
       dataPinTable[0].map((itemGroup, index) => (
         // console.log(itemGroup.value)
@@ -252,8 +296,14 @@ export class Table extends Component {
           <div className="table-header-rows">
             <div className="number address">Address (TX id)</div>
             <div className="number">Height</div>
-            <div className="number">ATOMs</div>
-            <div className="number">GCYB estimation</div>
+            <div className="number sort-row" onClick={this.sortAtom}>
+              ATOMs
+              <div className={`triangle ${sortAtom && asc ? 'asc' : ''}`} />
+            </div>
+            <div className="number sort-row" onClick={this.sortCyb}>
+              GCYB estimation
+              <div className={`triangle ${sortSyb && asc ? 'asc' : ''}`} />
+            </div>
           </div>
           {pin && (
             <div

@@ -659,6 +659,23 @@ select {
     height: 100%;
 }
 
+.sort-row:hover {
+    cursor: pointer;
+    color: #3ab793;
+}
+
+.triangle {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 9px solid #3ab793;
+    margin: 0 5px;
+    transform: rotate(180deg);
+}
+
+.triangle.asc {
+    transform: rotate(0deg);
+}
+
 /* --------- */
 
 .height100 {

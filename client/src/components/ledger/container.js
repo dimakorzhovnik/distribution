@@ -30,8 +30,20 @@ const LogoLedger = () => (
   </svg>
 );
 
-export const ContainetLedger = ({ children }) => (
+export const ContainetLedger = ({ children, onClickBtnCloce }) => (
   <div className="container-action height50 box-shadow-1px">
+    <div style={{ textAlign: 'right', padding: '0 5px' }}>
+      <span>
+        [
+        <a
+          onClick={onClickBtnCloce}
+          style={{ color: 'rgb(225, 225, 225)', cursor: 'pointer' }}
+        >
+          exit
+        </a>
+        ]
+      </span>
+    </div>
     <div className="container-action-content-ledger">
       <div className="display-flex flex-direction-column">
         <LogoLedger />

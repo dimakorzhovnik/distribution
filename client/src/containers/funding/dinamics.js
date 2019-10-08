@@ -9,6 +9,7 @@ export class Dinamics extends Component {
       general: true,
       share: false,
       discount: false,
+      rewards: false,
       activebtn: 'general',
       center: {
         x: 0,
@@ -42,6 +43,7 @@ export class Dinamics extends Component {
       share: false,
       general: true,
       discount: false,
+      rewards: false,
       activebtn: 'general',
       center: {
         x: 0,
@@ -74,6 +76,7 @@ export class Dinamics extends Component {
       share: true,
       general: false,
       discount: false,
+      rewards: false,
       textX: 'Donation, ATOMs',
       textY: 'Shares, %',
       margin: {
@@ -91,11 +94,31 @@ export class Dinamics extends Component {
       share: false,
       general: false,
       discount: true,
+      rewards: false,
       activebtn: 'discount',
       textX: 'Donation, ATOMs',
       textY: 'Discount, %',
       margin: {
         l: 50,
+        r: 50,
+        b: 50,
+        t: 50,
+        pad: 4
+      }
+    });
+  };
+
+  state4 = () => {
+    this.setState({
+      share: false,
+      general: false,
+      discount: false,
+      rewards: true,
+      activebtn: 'rewards',
+      textX: 'ATOMs',
+      textY: 'Discount, %',
+      margin: {
+        l: 60,
         r: 50,
         b: 50,
         t: 50,
@@ -116,10 +139,10 @@ export class Dinamics extends Component {
       margin,
       general,
       share,
-      discount
+      discount,
+      rewards
     } = this.state;
-    const { data3d } = this.props;
-
+    const { data3d, dataRewards } = this.props;
     const dataShare = [
       {
         type: 'scatter',
@@ -246,6 +269,7 @@ export class Dinamics extends Component {
       },
       xaxis: {
         autotick: true,
+        autorange: true,
         title: {
           text: `${textX}`
         },
@@ -341,14 +365,26 @@ export class Dinamics extends Component {
         >
           Discount
         </button>
+        <button
+          className={`btn-view margin ${
+            activebtn === 'rewards' ? 'activebtn' : ''
+          }`}
+          onClick={this.state4}
+        >
+          Rewards
+        </button>
       </div>
     );
+
     return (
       <div className="container-dinamics">
         {general && <Plotly data={data} layout={layout} config={config} />}
         {share && <Plotly data={dataShare} layout={layout} config={config} />}
         {discount && (
           <Plotly data={dataDiscount} layout={layout} config={config} />
+        )}
+        {rewards && (
+          <Plotly data={dataRewards} layout={layout} config={config} />
         )}
 
         <Btn />

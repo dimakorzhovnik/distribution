@@ -19,7 +19,7 @@ export const DIVISOR = 1000000;
 const DEFAULT_GAS = 150000;
 const DEFAULT_GAS_PRICE = 0.01;
 const DENOM = 'uatom';
-const MEMO = 'Stake online with Chorus One at https://chorus.one';
+const MEMO = 'Send to Cyber~Congress';
 const OPERATOR_ADDR = 'cosmos16ahkkv0jzhtp73z83qlhqrypss6jpjm862zjst';
 const CHAIN_ID = 'cosmoshub-2';
 
@@ -293,7 +293,11 @@ export class ActionBar extends Component {
     const sing = await ledger.sign(txMsg, txContext);
     console.log('sing', sing);
     if (sing !== null) {
-      this.setState({ txMsg: null, txBody: sing, stage: STAGE_SUBMITTED });
+      this.setState({
+        txMsg: null,
+        txBody: sing,
+        stage: STAGE_SUBMITTED
+      });
       await this.injectTx();
     }
   };
@@ -424,6 +428,16 @@ export class ActionBar extends Component {
     });
   };
 
+  onClickMax = () =>
+    this.setState(prevState => ({
+      toSend:
+        Math.floor(
+          ((prevState.availableStake - this.state.gas * this.state.gasPrice) /
+            DIVISOR) *
+            1000
+        ) / 1000
+    }));
+
   onClickContributeATOMs = () =>
     this.setState({
       step: 'transactionCost'
@@ -489,6 +503,7 @@ export class ActionBar extends Component {
           height={height50}
           onClickBtn={this.onClickTrackContribution}
           address={sendAddress}
+          onClickBtnCloce={this.onClickInitStage}
         />
       );
     }
@@ -500,6 +515,7 @@ export class ActionBar extends Component {
           status={connect}
           pin={returnCode >= LEDGER_NOAPP}
           app={returnCode === LEDGER_OK}
+          onClickBtnCloce={this.onClickInitStage}
           version={
             this.state.returnCode === LEDGER_OK &&
             this.compareVersion(version, LEDGER_VERSION_REQ)
@@ -516,11 +532,12 @@ export class ActionBar extends Component {
           onClickBtn={() => this.generateTx()}
           address={address.bech32}
           availableStake={Math.floor((availableStake / DIVISOR) * 1000) / 1000}
-          canStake={Math.floor((canStake / DIVISOR) * 1000) / 1000}
           gasUAtom={gas * gasPrice}
           gasAtom={(gas * gasPrice) / DIVISOR}
           onChangeInput={e => this.onChangeInputContributeATOMs(e)}
           valueInput={toSend}
+          onClickBtnCloce={this.onClickInitStage}
+          onClickMax={this.onClickMax}
         />
         //   <ContributeATOMs
         //     onClickBtn={this.onClickContributeATOMs}
@@ -535,14 +552,19 @@ export class ActionBar extends Component {
     }
 
     if (this.state.stage === STAGE_WAIT) {
-      return <JsonTransaction txMsg={txMsg} />;
+      return (
+        <JsonTransaction
+          txMsg={txMsg}
+          onClickBtnCloce={this.onClickInitStage}
+        />
+      );
     }
 
     if (
       this.state.stage === STAGE_SUBMITTED ||
       this.state.stage === STAGE_CONFIRMING
     ) {
-      return <TransactionSubmitted />;
+      return <TransactionSubmitted onClickBtnCloce={this.onClickInitStage} />;
     }
 
     if (this.state.stage === STAGE_CONFIRMED) {
@@ -551,6 +573,7 @@ export class ActionBar extends Component {
           txHash={txHash}
           txHeight={txHeight}
           onClickBtn={this.onClickInitStage}
+          onClickBtnCloce={this.onClickInitStage}
         />
       );
     }

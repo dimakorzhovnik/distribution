@@ -9,13 +9,15 @@ import {
   run,
   roundNumber
 } from '../../utils/utils';
+import { Loading } from '../../components/index';
 import { wsURL, ATOMsALL } from '../../utils/config';
 import {
   cybWon,
   funcDiscount,
   getEstimation,
   getShares,
-  getDataPlot
+  getDataPlot,
+  getRewards
 } from '../../utils/fundingMath';
 import { dataJson } from './dataConst';
 
@@ -52,11 +54,11 @@ class Funding extends PureComponent {
       won: 0,
       currentPrice: 0,
       currentDiscount: 0,
-      dataPlot: []
+      dataPlot: [],
+      dataRewards: [],
+      dataAxisRewards: []
     };
   }
-
- 
 
   async componentDidMount() {
     // console.log(dataTableJson);
@@ -84,13 +86,14 @@ class Funding extends PureComponent {
     this.ws.onopen = () => {
       console.log('connected');
     };
-    this.ws.onmessage = evt => {
+    this.ws.onmessage = async evt => {
       // listen to data sent from the websocket server
       const message = JSON.parse(evt.data);
       console.log(message);
       this.getTableData(message);
       this.getStatistics(message);
       this.getData(message);
+      this.getPlot(message);
     };
 
     this.ws.onclose = () => {
@@ -98,6 +101,11 @@ class Funding extends PureComponent {
       // automatically try to reconnect on connection loss
     };
   };
+
+  // init = () => {
+  //   this.getDataWS();
+
+  // }
 
   // async componentDidUpdate(prevProps, prevState) {
   //   if (prevState.schedule !== this.state.schedule) {
@@ -147,9 +155,95 @@ class Funding extends PureComponent {
       atomLeff,
       won: Math.floor((won / Math.pow(10, 9)) * 1000) / 1000,
       currentPrice: Math.floor((currentPrice / Math.pow(10, 9)) * 1000) / 1000,
-      currentDiscount: Math.floor((currentDiscount * 100) * 1000) / 1000
+      currentDiscount: Math.floor(currentDiscount * 100 * 1000) / 1000
     });
     return statistics;
+  };
+
+  getPlot = async data => {
+    const Plot = [];
+    const dataAxisRewards = {
+      type: 'scatter',
+      x: 0,
+      y: 0,
+      line: {
+        width: 2,
+        color: '#36d6ae'
+      }
+    };
+    const tempArr = localStorage.getItem('allpin');
+    const allPin = JSON.parse(tempArr);
+
+    await this.getStatistics(data).then(statistics => {
+      const { currentPrice, currentDiscount, amount } = statistics;
+      const rewards = getRewards(currentPrice, currentDiscount, amount, amount);
+      const rewards0 = getRewards(currentPrice, currentDiscount, amount, 0);
+      dataAxisRewards.y = [rewards0, rewards];
+      dataAxisRewards.x = [0, amount];
+      this.setState({
+        dataAxisRewards
+      });
+      Plot.push(dataAxisRewards);
+      if (allPin !== null) {
+        if (allPin[0] === undefined) {
+          this.setState({
+            dataRewards: Plot
+          });
+        }
+        let amountAtom = 0;
+        allPin.map(itemsG => {
+          const { group } = itemsG;
+
+          asyncForEach(Array.from(Array(data.length).keys()), async item => {
+            const tempArrPlot = {
+              x: 0,
+              y: 0,
+              fill: 'tozeroy',
+              type: 'scatter',
+              line: {
+                width: 2,
+                color: '#36d6ae'
+              }
+            };
+            const address = data[item].tx.value.msg[0].value.from_address;
+            const amou =
+              Number.parseInt(
+                data[item].tx.value.msg[0].value.amount[0].amount
+              ) *
+              10 ** -6;
+            if (address === group) {
+              const x0 = amountAtom;
+              const y0 = getRewards(currentPrice, currentDiscount, amount, x0);
+              amountAtom += amou;
+              const x = amountAtom;
+              const y = getRewards(
+                currentPrice,
+                currentDiscount,
+                amount,
+                amountAtom
+              );
+              tempArrPlot.x = [x0, x];
+              tempArrPlot.y = [y0, y];
+              // console.log('dataRewards', tempArr);
+              Plot.push(tempArrPlot);
+            } else {
+              amountAtom +=
+                Number.parseInt(
+                  data[item].tx.value.msg[0].value.amount[0].amount
+                ) *
+                10 ** -6;
+            }
+          });
+          this.setState({
+            dataRewards: Plot
+          });
+        });
+      } else {
+        this.setState({
+          dataRewards: Plot
+        });
+      }
+    });
   };
 
   getTableData = async data => {
@@ -164,7 +258,7 @@ class Funding extends PureComponent {
         let estimation = 0;
         const val =
           Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
-        Math.pow(10, 6);
+          Math.pow(10, 6);
         const tempVal = temp + val;
         await this.getStatistics(data).then(statistics => {
           // console.log('statistics.currentPrice', statistics.currentPrice);
@@ -259,9 +353,15 @@ class Funding extends PureComponent {
       won,
       currentPrice,
       currentDiscount,
-      dataPlot
+      dataPlot,
+      dataAxisRewards,
+      dataRewards
     } = this.state;
-    // console.log(groups);
+    console.log('dataRewards', dataRewards[0]);
+
+    // if (dataRewards[0] === undefined) {
+    //   return <Loading />;
+    // }
     // console.log(dataPlot);
     return (
       <span>
@@ -273,7 +373,7 @@ class Funding extends PureComponent {
             price={formatNumber(currentPrice)}
             discount={currentDiscount}
           />
-          <Dinamics data3d={dataPlot} />
+          <Dinamics data3d={dataPlot} dataRewards={dataRewards} />
           <Table data={groups} />
         </main>
         <ActionBar />
