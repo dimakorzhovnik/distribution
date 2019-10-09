@@ -205,7 +205,9 @@ export class Table extends Component {
           item={itemGroup.value.address.map((item, index) => (
             <div className="table-rows-child" key={index}>
               <div className="number hash">
-                <a href={`https://cyberd.ai/transactions/${item.txhash}`}>
+                <a
+                  href={`https://cosmos.bigdipper.live/transactions/${item.txhash}`}
+                >
                   {item.txhash}
                 </a>
               </div>
@@ -252,7 +254,7 @@ export class Table extends Component {
         item={itemGroup.address.map((item, index) => (
           <div className="table-rows-child" key={index}>
             <div className="number hash">
-              <a href={`https://cyberd.ai/transactions/${item.txhash}`}>
+              <a href={`https://cosmos.bigdipper.live/transactions/${item.txhash}`}>
                 {item.txhash}
               </a>
             </div>
@@ -291,7 +293,7 @@ export class Table extends Component {
     }
     return (
       <div>
-        <div>table</div>
+        <div className='text-align-center'>Contributions history</div>
         <div className="table">
           <div className="table-header-rows">
             <div className="number address">Address (TX id)</div>

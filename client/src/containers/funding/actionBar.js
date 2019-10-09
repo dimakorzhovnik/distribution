@@ -20,7 +20,7 @@ const DEFAULT_GAS = 150000;
 const DEFAULT_GAS_PRICE = 0.01;
 const DENOM = 'uatom';
 const MEMO = 'Send to Cyber~Congress';
-const OPERATOR_ADDR = 'cosmos16ahkkv0jzhtp73z83qlhqrypss6jpjm862zjst';
+const OPERATOR_ADDR = 'cosmos1kajt7sxfpnfujm7ptj90654lmwz4sftpmk0jm6';
 const CHAIN_ID = 'cosmoshub-2';
 
 const STAGE_INIT = 0;
@@ -90,7 +90,6 @@ export class ActionBar extends Component {
       textAreaRef: React.createRef(),
       clipboardCopySuccess: false,
       height50: false,
-      sendAddress: 'cyber12psudf4rpaw4jwhuyx3y8sejhsynae7ggvzvy8'
     };
     this.ledgerModal = React.createRef();
     this.atomField = React.createRef();
@@ -470,7 +469,6 @@ export class ActionBar extends Component {
       valueSelect,
       step,
       height50,
-      sendAddress,
       connect,
       ledger,
       returnCode,
@@ -502,7 +500,7 @@ export class ActionBar extends Component {
         <SendAmount
           height={height50}
           onClickBtn={this.onClickTrackContribution}
-          address={sendAddress}
+          address={OPERATOR_ADDR}
           onClickBtnCloce={this.onClickInitStage}
         />
       );
@@ -520,7 +518,7 @@ export class ActionBar extends Component {
             this.state.returnCode === LEDGER_OK &&
             this.compareVersion(version, LEDGER_VERSION_REQ)
           }
-          address={sendAddress}
+          address={OPERATOR_ADDR}
         />
       );
     }

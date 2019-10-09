@@ -11,22 +11,28 @@ export const ContainerCard = ({ children, col, styles }) => (
 );
 
 export const Indicators = ({ title, value, tooltipValue, positionTooltip }) => (
-  <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
-    <div className="contaiter-indicator">
-      <span className="indicator-title">{value}</span>
-      <span className="indicator-value">{title}</span>
-      {/* <div className='dots' /> */}
-    </div>
-  </Tooltip>
+  <div className="contaiter-indicator">
+    <span className="indicator-title">{value}</span>
+    <span className="indicator-value">
+      {title}{' '}
+      <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
+        <span>(?)</span>
+      </Tooltip>
+    </span>
+    {/* <div className='dots' /> */}
+  </div>
 );
 
 export const Card = ({ title, value, tooltipValue, positionTooltip }) => (
-  <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
-    <div className="container-card">
-      <span className="card-title">{value}</span>
-      <span className="card-value">{title}</span>
-    </div>
-  </Tooltip>
+  <div className="container-card">
+    <span className="card-title">{value}</span>
+    <span className="card-value">
+      {title}{' '}
+      <Tooltip placement={positionTooltip} tooltip={tooltipValue}>
+        <span>(?)</span>
+      </Tooltip>
+    </span>
+  </div>
 );
 
 export const CardArrow = ({ title, value, win }) => (

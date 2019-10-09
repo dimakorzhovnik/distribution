@@ -389,6 +389,12 @@ span.right-input {
     box-shadow: 0 0 10px 0px #38d6ae;
 }
 
+.btn-view:focus {
+    outline: none;
+    border: none;
+}
+
+
 .activebtn {
     box-shadow: 0 0 6px 0px #38d6ae;
 }
@@ -476,6 +482,7 @@ select {
 }
 
 .tooltipContainer {
+    font-size: 12px !important;
     box-shadow: 0 0 2px #38d6ae !important;
     padding: 10px !important;
     max-width: 200px !important;

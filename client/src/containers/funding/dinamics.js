@@ -78,7 +78,7 @@ export class Dinamics extends Component {
       discount: false,
       rewards: false,
       textX: 'Donation, ATOMs',
-      textY: 'Shares, %',
+      textY: 'CYBs won, TCYBs',
       margin: {
         l: 50,
         r: 50,
@@ -97,7 +97,7 @@ export class Dinamics extends Component {
       rewards: false,
       activebtn: 'discount',
       textX: 'Donation, ATOMs',
-      textY: 'Discount, %',
+      textY: 'Advantage, %',
       margin: {
         l: 50,
         r: 50,
@@ -115,8 +115,8 @@ export class Dinamics extends Component {
       discount: false,
       rewards: true,
       activebtn: 'rewards',
-      textX: 'ATOMs',
-      textY: 'Discount, %',
+      textX: 'Donation, ATOMs',
+      textY: 'Price, ATOMs/CYB',
       margin: {
         l: 60,
         r: 50,
@@ -143,6 +143,14 @@ export class Dinamics extends Component {
       rewards
     } = this.state;
     const { data3d, dataRewards } = this.props;
+    // console.log('data3d', data3d);
+    let _yaxis = 0;
+    let _xaxis = 0;
+    if (dataRewards[0] !== undefined) {
+      _yaxis = dataRewards[0].y[0] / 0.8;
+      _xaxis = dataRewards[0].x[1] / 0.8;
+    }
+
     const dataShare = [
       {
         type: 'scatter',
@@ -169,10 +177,7 @@ export class Dinamics extends Component {
           width: 2,
           color: '#36d6ae'
         },
-        hovertemplate:
-          'ATOMs contributed: %{x}' +
-          '<br>TCYB allocated: %{y: .2f}%' +
-          '<extra></extra>'
+        hoverinfo: 'none'
       }
     ];
 
@@ -189,7 +194,7 @@ export class Dinamics extends Component {
         },
         hovertemplate:
           'ATOMs contributed: %{x}<br>' +
-          'Personal discount: %{y:.2f%}%<br>' +
+          'Personal advantage: %{y:.2f%}%<br>' +
           '<extra></extra>'
       },
       {
@@ -200,10 +205,7 @@ export class Dinamics extends Component {
           width: 2,
           color: '#36d6ae'
         },
-        hovertemplate:
-          'ATOMs contributed: %{x}<br>' +
-          'Personal discount: %{y:.2f%}%<br>' +
-          '<extra></extra>'
+        hoverinfo: 'none'
       }
     ];
 
@@ -221,9 +223,9 @@ export class Dinamics extends Component {
           color: '#fff'
         },
         hovertemplate:
-          'TCYB allocated: %{x: .2f}%<br>' +
+          'TCYB allocated: %{x: .2f}<br>' +
           'ATOMs contributed: %{y}<br>' +
-          'Personal discount: %{z:.2f%}%<br>' +
+          'Personal advantage: %{z:.2f%}%<br>' +
           '<extra></extra>'
       },
       {
@@ -238,11 +240,7 @@ export class Dinamics extends Component {
         },
         ticks: '',
         showticklabels: false,
-        hovertemplate:
-          'TCYB allocated: %{x: .2f}%<br>' +
-          'ATOMs contributed: %{y}<br>' +
-          'Personal discount: %{z:.2f%}%<br>' +
-          '<extra></extra>'
+        hoverinfo: 'none'
       }
     ];
 
@@ -258,22 +256,24 @@ export class Dinamics extends Component {
       },
       yaxis: {
         autotick: true,
-        autorange: true,
+        autorange: !rewards,
         rangemode: 'normal',
+        range: [0, _yaxis],
         title: {
           text: `${textY}`
         },
-        gridcolor: '#000',
+        gridcolor: '#ffffff66',
         color: '#fff',
         zerolinecolor: '#dedede'
       },
       xaxis: {
         autotick: true,
-        autorange: true,
+        autorange: !rewards,
         title: {
           text: `${textX}`
         },
-        gridcolor: '#000',
+        range: [0, _xaxis],
+        gridcolor: '#ffffff66',
         color: '#fff',
         zerolinecolor: '#dedede'
       },
@@ -296,7 +296,7 @@ export class Dinamics extends Component {
           dtick: 1,
           tickcolor: '#000',
           title: {
-            text: 'Shares, %'
+            text: 'CYBs won, TCYBs'
           },
           gridcolor: '#dedede',
           color: '#fff',
@@ -307,9 +307,10 @@ export class Dinamics extends Component {
         },
         zaxis: {
           title: {
-            text: 'Discont, %'
+            text: 'Advantage, %'
           },
           gridcolor: '#dedede',
+          autorange: 'reversed',
           color: '#fff',
           tickfont: {
             color: '#36d6ae'

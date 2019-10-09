@@ -47,9 +47,12 @@ class Funding extends PureComponent {
 
   constructor(props) {
     super(props);
+    const tempArr = localStorage.getItem('allpin');
+    const allPin = JSON.parse(tempArr);
     this.state = {
       groups: [],
       amount: 0,
+      allPin,
       atomLeff: 0,
       won: 0,
       currentPrice: 0,
@@ -89,7 +92,7 @@ class Funding extends PureComponent {
     this.ws.onmessage = async evt => {
       // listen to data sent from the websocket server
       const message = JSON.parse(evt.data);
-      console.log(message);
+      console.log('txs', message);
       this.getTableData(message);
       this.getStatistics(message);
       this.getData(message);
@@ -134,14 +137,14 @@ class Funding extends PureComponent {
 
     await asyncForEach(Array.from(Array(data.length).keys()), async item => {
       amount +=
-        Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
-        Math.pow(10, 6);
+        Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) *
+        10 ** -1;
     });
     const atomLeff = ATOMsALL - amount;
     const won = cybWon(amount);
     const currentPrice = won / amount;
     const currentDiscount = funcDiscount(amount);
-    console.log('won', won);
+    // console.log('won', won);
     const statistics = {
       amount,
       atomLeff,
@@ -161,6 +164,8 @@ class Funding extends PureComponent {
   };
 
   getPlot = async data => {
+    const { allPin } = this.state;
+    console.log('allPin', allPin);
     const Plot = [];
     const dataAxisRewards = {
       type: 'scatter',
@@ -171,9 +176,7 @@ class Funding extends PureComponent {
         color: '#36d6ae'
       }
     };
-    const tempArr = localStorage.getItem('allpin');
-    const allPin = JSON.parse(tempArr);
-
+  
     await this.getStatistics(data).then(statistics => {
       const { currentPrice, currentDiscount, amount } = statistics;
       const rewards = getRewards(currentPrice, currentDiscount, amount, amount);
@@ -210,7 +213,7 @@ class Funding extends PureComponent {
               Number.parseInt(
                 data[item].tx.value.msg[0].value.amount[0].amount
               ) *
-              10 ** -6;
+              10 ** -1;
             if (address === group) {
               const x0 = amountAtom;
               const y0 = getRewards(currentPrice, currentDiscount, amount, x0);
@@ -234,9 +237,9 @@ class Funding extends PureComponent {
                 10 ** -6;
             }
           });
-          this.setState({
-            dataRewards: Plot
-          });
+        });
+        this.setState({
+          dataRewards: Plot
         });
       } else {
         this.setState({
@@ -257,8 +260,8 @@ class Funding extends PureComponent {
       await asyncForEach(Array.from(Array(data.length).keys()), async item => {
         let estimation = 0;
         const val =
-          Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
-          Math.pow(10, 6);
+          Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) *
+          10 ** -1;
         const tempVal = temp + val;
         await this.getStatistics(data).then(statistics => {
           // console.log('statistics.currentPrice', statistics.currentPrice);
@@ -289,11 +292,11 @@ class Funding extends PureComponent {
           from: data[item].tx.value.msg[0].value.from_address,
           amount:
             Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) *
-            10 ** -6,
+            10 ** -1,
           estimation
         });
       });
-      console.log('sumtx', sumtx);
+      // console.log('sumtx', sumtx);
       // console.log(table);
       const groupsV = table.reverse().reduce((obj, item) => {
         obj[item.from] = obj[item.from] || [];
@@ -323,7 +326,7 @@ class Funding extends PureComponent {
         groups[i].amountСolumn = sum;
         groups[i].cyb = sumEstimation;
       }
-      console.log(groups);
+      // console.log(groups);
       return this.setState({
         groups
       });
@@ -337,8 +340,8 @@ class Funding extends PureComponent {
 
     await asyncForEach(Array.from(Array(data.length).keys()), async item => {
       amount +=
-        Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) /
-        Math.pow(10, 6);
+        Number.parseInt(data[item].tx.value.msg[0].value.amount[0].amount) *
+        10 ** -1;
     });
     const dataPlot = await getDataPlot(amount);
     this.setState({
@@ -357,7 +360,7 @@ class Funding extends PureComponent {
       dataAxisRewards,
       dataRewards
     } = this.state;
-    console.log('dataRewards', dataRewards[0]);
+    // console.log('dataRewards', dataRewards);
 
     // if (dataRewards[0] === undefined) {
     //   return <Loading />;

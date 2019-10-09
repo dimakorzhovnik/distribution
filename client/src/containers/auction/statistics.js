@@ -12,32 +12,32 @@ export const Statistics = ({
 }) => (
   <ContainerCard styles={{ alignItems: 'center' }} col="5">
     <Indicators
-      title={`${round} of ${roundAll}`}
-      value="Round"
+      title="Round"
+      value={`${round} of ${roundAll}`}
       tooltipValue="The current round of total number in the Auction"
       positionTooltip="bottom"
     />
     <Indicators
-      title={`${raised} ETH`}
-      value="Raised"
+      title="Raised"
+      value={`${raised} ETH`}
       tooltipValue="The number of total ETH raised currently"
       positionTooltip="bottom"
     />
     <Card
-      title={`${currentPrice} ETH/G${TOKEN_NAME}`}
-      value="Current price"
+      title="Current price"
+      value={`${currentPrice} ETH/G${TOKEN_NAME}`}
       tooltipValue="The current price ETH/GOL calculated according to the current round"
       positionTooltip="bottom"
     />
     <Indicators
-      title={`${timeLeft} hour`}
-      value="Left in round"
+      title="Left in round"
+      value={`${timeLeft} hour`}
       tooltipValue="Time left in the current round closing"
       positionTooltip="bottom"
     />
     <Indicators
-      title={`${cap} ETH`}
-      value={`${TOKEN_NAME} CAP`}
+      title={`${TOKEN_NAME} CAP`}
+      value={`${cap} ETH`}
       tooltipValue="GOL market cap in ETH"
       positionTooltip="bottom"
     />

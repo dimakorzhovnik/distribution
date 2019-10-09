@@ -12,7 +12,7 @@ export const history = createHashHistory({});
 const AppRouter = () => (
   <Router history={history}>
     {/* <Route path="/" component={App} /> */}
-    <Route path="/got" component={Got} />
+    {/* <Route path="/got" component={Got} /> */}
  
     <Route path="/funding" component={Funding} />
     <Route path="/auction" component={Auction} />

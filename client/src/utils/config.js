@@ -1,4 +1,6 @@
-const wsURL = 'wss://herzner1.cybernode.ai/';
+// const wsURL = 'wss://herzner1.cybernode.ai/';
+const wsURL = 'wss://deimos.cybernode.ai/';
+
 
 const ATOMsALL = 600000;
 

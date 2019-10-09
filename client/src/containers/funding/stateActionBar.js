@@ -143,7 +143,7 @@ export const Confirmed = ({
           alignItems: 'center',
           margin: '0 auto'
         }}
-        href={`https://www.mintscan.io/txs/${txHash}`}
+        href={`https://cosmos.bigdipper.live/transactions/${txHash}`}
       >
         View transaction
       </a>
@@ -204,11 +204,22 @@ export const SendAmount = ({ onClickBtn, address, onClickBtnCloce }) => (
       <div className="container-send">
         <div>
           <div>
-            <span className="font-size-20 display-inline-block margin-bottom-10px">
+            <span
+              className="display-inline-block text-align-center"
+              style={{
+                marginBottom: 20,
+                fontSize: '16px'
+              }}
+            >
               Send any amount of ATOMs directly to cyber~Congress multisig by
               your using Cosmos wallet
             </span>
-            <div className="display-flex align-items-center">
+            <div
+              className="display-flex align-items-center"
+              style={{
+                justifyContent: 'center'
+              }}
+            >
               <span className="font-size-16">{address}</span>
               <button
                 className="copy-address"
