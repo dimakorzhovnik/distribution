@@ -64,25 +64,7 @@ class Funding extends PureComponent {
   }
 
   async componentDidMount() {
-    // console.log(dataTableJson);
     run(this.getDataWS);
-    // console.log(dataJson);
-
-    // this.getTableData(dataJson);
-    // this.getStatistics(dataJson);
-
-    // if (this.props.web3) {
-    // run(this.getPost);
-    // run(this.getStatistics);
-    // run(this.getTableData);
-
-    // Make a request for a user with a given ID
-    // run(this.getInfo);
-    // run(this.getTicketsInfo);
-    // run(this.getShares);
-    // run(this.getDeposit);
-    // run(this.getSchedule);
-    // }
   }
 
   getDataWS = () => {
@@ -103,30 +85,6 @@ class Funding extends PureComponent {
       console.log('disconnected');
       // automatically try to reconnect on connection loss
     };
-  };
-
-  // init = () => {
-  //   this.getDataWS();
-
-  // }
-
-  // async componentDidUpdate(prevProps, prevState) {
-  //   if (prevState.schedule !== this.state.schedule) {
-  //     run(this.getTalks);
-  //   }
-  //   if (prevState.tickets !== this.state.tickets) {
-  //     run(this.getTicketsArray);
-  //   }
-  //   if (prevState.purchasedTickets !== this.state.purchasedTickets) {
-  //     this.checkUserTicket();
-  //   }
-  // }
-  getPost = async () => {
-    const response = await fetch(url);
-    const data = await response.json();
-    this.setState({
-      data
-    });
   };
 
   getStatistics = async data => {
@@ -198,6 +156,7 @@ class Funding extends PureComponent {
           const { group } = itemsG;
 
           asyncForEach(Array.from(Array(data.length).keys()), async item => {
+            const colorPlot = group.replace(/[^0-9]/g, '').substr(0, 6);
             const tempArrPlot = {
               x: 0,
               y: 0,
@@ -205,7 +164,7 @@ class Funding extends PureComponent {
               type: 'scatter',
               line: {
                 width: 2,
-                color: '#36d6ae'
+                color: `#${colorPlot}`
               }
             };
             const address = data[item].tx.value.msg[0].value.from_address;
