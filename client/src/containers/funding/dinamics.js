@@ -144,6 +144,7 @@ export class Dinamics extends Component {
     } = this.state;
     const { data3d, dataRewards } = this.props;
     // console.log('data3d', data3d);
+    console.log('dataRewards', dataRewards);
     let _yaxis = 0;
     let _xaxis = 0;
     if (dataRewards[0] !== undefined) {

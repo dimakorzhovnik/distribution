@@ -123,7 +123,7 @@ class Funding extends PureComponent {
 
   getPlot = async data => {
     const { allPin } = this.state;
-    console.log('allPin', allPin);
+    // console.log('allPin', allPin);
     const Plot = [];
     const dataAxisRewards = {
       type: 'scatter',
@@ -151,9 +151,12 @@ class Funding extends PureComponent {
             dataRewards: Plot
           });
         }
-        let amountAtom = 0;
-        allPin.map(itemsG => {
-          const { group } = itemsG;
+        // allPin.map(itemsG => {
+          asyncForEach(Array.from(Array(allPin.length).keys()), async itemsG => {
+          // console.log('allPin', allPin);
+          let amountAtom = 0;
+          const { group } = allPin[itemsG];
+        // debugger;
 
           asyncForEach(Array.from(Array(data.length).keys()), async item => {
             const colorPlot = group.replace(/[^0-9]/g, '').substr(0, 6);
@@ -189,16 +192,13 @@ class Funding extends PureComponent {
               // console.log('dataRewards', tempArr);
               Plot.push(tempArrPlot);
             } else {
-              amountAtom +=
-                Number.parseInt(
-                  data[item].tx.value.msg[0].value.amount[0].amount
-                ) *
-                10 ** -6;
+              amountAtom += amou;
             }
+            
           });
-        });
-        this.setState({
-          dataRewards: Plot
+              this.setState({
+                dataRewards: Plot
+              });
         });
       } else {
         this.setState({
