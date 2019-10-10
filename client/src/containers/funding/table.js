@@ -106,12 +106,12 @@ class Row extends Component {
 export class Table extends Component {
   constructor(props) {
     super(props);
-    const data = [];
-    const jsonStr = localStorage.getItem('allpin');
-    data.push(JSON.parse(jsonStr));
+    // const data = [];
+    // const jsonStr = localStorage.getItem('allpin');
+    // data.push(JSON.parse(jsonStr));
     this.state = {
       pin: false,
-      dataPinTable: data,
+      // dataPinTable: data,
       loader: false,
       sortAtom: false,
       sortSyb: false,
@@ -119,21 +119,21 @@ export class Table extends Component {
     };
   }
 
-  updateList = data => {
-    // console.log(data);
-    const tempArr = [];
-    let pin = false;
-    tempArr.push(data);
-    if (tempArr[0] != null) {
-      if (tempArr[0].length) {
-        pin = true;
-      }
-    }
-    this.setState({
-      dataPinTable: tempArr,
-      pin
-    });
-  };
+  // updateList = data => {
+  //   // console.log(data);
+  //   const tempArr = [];
+  //   let pin = false;
+  //   tempArr.push(data);
+  //   if (tempArr[0] != null) {
+  //     if (tempArr[0].length) {
+  //       pin = true;
+  //     }
+  //   }
+  //   this.setState({
+  //     dataPinTable: tempArr,
+  //     pin
+  //   });
+  // };
 
   sortAtom = () => {
     this.setState({
@@ -162,25 +162,25 @@ export class Table extends Component {
   //     this.getCellValue(asc ? b : a, idx)
   //   );
 
-  componentDidMount() {
-    const dataPin = [];
-    const jsonStr = localStorage.getItem('allpin');
-    dataPin.push(JSON.parse(jsonStr));
-    if (dataPin[0] != null) {
-      if (dataPin[0].length) {
-        this.setState({
-          pin: true
-        });
-      }
-    }
-    this.setState({
-      loader: false
-    });
-  }
+  // componentDidMount() {
+  //   const dataPin = [];
+  //   const jsonStr = localStorage.getItem('allpin');
+  //   dataPin.push(JSON.parse(jsonStr));
+  //   if (dataPin[0] != null) {
+  //     if (dataPin[0].length) {
+  //       this.setState({
+  //         pin: true
+  //       });
+  //     }
+  //   }
+  //   this.setState({
+  //     loader: false
+  //   });
+  // }
 
   render() {
-    const { data } = this.props;
-    const { pin, dataPinTable, loader, sortSyb, sortAtom, asc } = this.state;
+    const { data, dataPinTable, pin, update } = this.props;
+    const { loader, sortSyb, sortAtom, asc } = this.state;
     if (sortSyb) {
       data.sort((a, b) => {
         const x = a.cyb;
@@ -196,11 +196,11 @@ export class Table extends Component {
       });
     }
     const tableRowPin = () =>
-      dataPinTable[0].map((itemGroup, index) => (
+      dataPinTable.map((itemGroup, index) => (
         // console.log(itemGroup.value)
         <Row
           pin={itemGroup}
-          updateList={this.updateList}
+          updateList={update}
           key={itemGroup.value.group}
           item={itemGroup.value.address.map((item, index) => (
             <div className="table-rows-child" key={index}>
@@ -249,7 +249,7 @@ export class Table extends Component {
       <Row
         pin={itemGroup}
         unPin
-        updateList={this.updateList}
+        updateList={update}
         key={itemGroup.group}
         item={itemGroup.address.map((item, index) => (
           <div className="table-rows-child" key={index}>

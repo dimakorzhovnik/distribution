@@ -10,31 +10,6 @@ import {
 } from './config';
 import { x, y, z } from './list';
 
-// const formatNumber = (number, toFixed) => {
-//   let formatted = +number;
-
-//   if (toFixed) {
-//     formatted = +formatted.toFixed(toFixed);
-//   }
-
-//   return formatted.toLocaleString('en').replace(/,/g, ' ');
-// };
-
-// const roundNumber = (num, scale) => {
-//   if (!`${num}`.includes('e')) {
-//     return +`${Math.floor(`${num}e+${scale}`)}e-${scale}`;
-//   }
-//   const arr = `${num}`.split('e');
-//   let sig = '';
-//   if (+arr[1] + scale > 0) {
-//     sig = '+';
-//   }
-//   const i = `${+arr[0]}e${sig}${+arr[1] + scale}`;
-//   const j = Math.floor(i);
-//   const k = +`${j}e-${scale}`;
-//   return k;
-// };
-
 const getShares = atoms => {
   const shares =
     a_3d_plot +
@@ -94,11 +69,26 @@ const getRewards = (price, discount, atoms, amount) => {
   return rewards;
 };
 
+const getGroupAddress = data => {
+  const groups = data.reverse().reduce((obj, item) => {
+    obj[item.from] = obj[item.from] || [];
+    obj[item.from].push({
+      amount: item.amount,
+      txhash: item.txhash,
+      height: item.height,
+      cybEstimation: item.estimation
+    });
+    return obj;
+  }, {});
+  return groups;
+};
+
 export {
   cybWon,
   funcDiscount,
   getEstimation,
   getShares,
   getDataPlot,
-  getRewards
+  getRewards,
+  getGroupAddress
 };
