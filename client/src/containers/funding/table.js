@@ -73,12 +73,7 @@ class Row extends Component {
     const { open, statePin } = this.state;
     const { item, children, pin, unPin } = this.props;
     const allPin = JSON.parse(localStorage.getItem('allpin'));
-    // console.log(pin.group);
 
-    //   allPin.map(item => {
-    //   const index = item.group.indexOf('cyber1hmkqhy8ygl6tnl5g8tc503rwrmmrkjcq4878e0');
-    //   console.log(index);
-    // });
     return (
       <div>
         <div
@@ -90,7 +85,7 @@ class Row extends Component {
           {statePin && (
             <button className="pin" onClick={e => this.funcPin(pin)} />
           )}
-          {!statePin && unPin && (
+          {!statePin && (
             <button className="unpin" onClick={e => this.funcUnPin(pin)} />
           )}
           <div onClick={this.open} className="table-rows-box">
@@ -106,9 +101,6 @@ class Row extends Component {
 export class Table extends Component {
   constructor(props) {
     super(props);
-    // const data = [];
-    // const jsonStr = localStorage.getItem('allpin');
-    // data.push(JSON.parse(jsonStr));
     this.state = {
       pin: false,
       // dataPinTable: data,
@@ -118,22 +110,6 @@ export class Table extends Component {
       asc: false
     };
   }
-
-  // updateList = data => {
-  //   // console.log(data);
-  //   const tempArr = [];
-  //   let pin = false;
-  //   tempArr.push(data);
-  //   if (tempArr[0] != null) {
-  //     if (tempArr[0].length) {
-  //       pin = true;
-  //     }
-  //   }
-  //   this.setState({
-  //     dataPinTable: tempArr,
-  //     pin
-  //   });
-  // };
 
   sortAtom = () => {
     this.setState({
@@ -150,33 +126,6 @@ export class Table extends Component {
       asc: !this.state.asc
     });
   };
-  // getCellValue = (tr, idx) =>
-  //   tr.children[idx].innerText || tr.children[idx].textContent;
-
-  // comparer = (idx, asc) => (a, b) =>
-  //   ((v1, v2) =>
-  //     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2)
-  //       ? v1 - v2
-  //       : v1.toString().localeCompare(v2))(
-  //     this.getCellValue(asc ? a : b, idx),
-  //     this.getCellValue(asc ? b : a, idx)
-  //   );
-
-  // componentDidMount() {
-  //   const dataPin = [];
-  //   const jsonStr = localStorage.getItem('allpin');
-  //   dataPin.push(JSON.parse(jsonStr));
-  //   if (dataPin[0] != null) {
-  //     if (dataPin[0].length) {
-  //       this.setState({
-  //         pin: true
-  //       });
-  //     }
-  //   }
-  //   this.setState({
-  //     loader: false
-  //   });
-  // }
 
   render() {
     const { data, dataPinTable, pin, update } = this.props;
